@@ -58,3 +58,5 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+#тестовая сцена
+temp_name_proj/Assets/Scenes/alabama.unity
