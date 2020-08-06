@@ -222,8 +222,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ad980451443d70438faac0bc6c235a0, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
@@ -264,8 +264,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &213145472
 GameObject:
   m_ObjectHideFlags: 0
@@ -304,7 +304,7 @@ Transform:
   m_GameObject: {fileID: 213145472}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.71728, y: 0.71728, z: 0.71728}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 468564152}
   m_Father: {fileID: 0}
@@ -337,11 +337,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45e653bab7fb20e499bda25e1b646fea, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_ExcludedPropertiesInInspector:
   - m_Script
-  m_LockStageInInspector:
+  m_LockStageInInspector: 
   m_StreamingVersion: 20170927
   m_Priority: 10
   m_StandbyUpdate: 2
@@ -1833,8 +1833,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7efdff55f7892418dded3a0c663b2f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &685256952
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1892,10 +1892,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 560e283b333d8084e850b1ada40da3a7, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
-=======
->>>>>>> eabdc7254d97ab49e313c6ccc79180c48199a5a6
 --- !u!1 &810384225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1940,10 +1936,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.9503889, y: 1.9113374}
-=======
   m_Size: {x: 1, y: 2}
->>>>>>> eabdc7254d97ab49e313c6ccc79180c48199a5a6
   m_EdgeRadius: 0
 --- !u!50 &810384227
 Rigidbody2D:
@@ -2041,8 +2034,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c69da97a9b9f5b74b9cc1ce4b9f9a8d2, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   speed: 3
   grounded: 0
 --- !u!1 &920675441
@@ -2139,8 +2132,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 72ece51f2901e7445ab60da3685d6b5f, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   m_ShowDebugText: 0
   m_ShowCameraFrustum: 1
   m_IgnoreTimeScale: 0
