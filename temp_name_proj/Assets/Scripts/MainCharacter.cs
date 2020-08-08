@@ -8,6 +8,7 @@ public class MainCharacter : MonoBehaviour
     Rigidbody2D body;
     float horizontal;// Переменная перемещения по оси х
     public float speed;// Переменная скорости перемещения
+    public float force;
     public bool grounded=false;// Переиенная состояния "на земле"
 
     Vector3 prevForce = new Vector3(0f, 0f, 0f);
@@ -25,11 +26,7 @@ public class MainCharacter : MonoBehaviour
     {
         horizontal= Input.GetAxis("Horizontal"); 
         /* Обработка нажатия кнопки прыжка */
-        if (Input.GetButtonDown("Jump") && grounded)
-        {
-            body.AddForce(new Vector2(0f, 4000f)); // -В чём сила брат? -В ньютанах. 
-            grounded = false; 
-        }
+
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -59,18 +56,24 @@ public class MainCharacter : MonoBehaviour
                 lastClicked.GetComponent<Rigidbody2D>().gravityScale = 1;
                 prevForce.Set(0f, 0f, 0f);
             }
-            lastClicked.GetComponent<Rigidbody2D>().AddForce((mouseDir.normalized * 150f * mouseDir.magnitude) - prevForce * 0.92f); //собственно, движение объекта
-            prevForce = mouseDir.normalized * 150f * mouseDir.magnitude;
+            lastClicked.GetComponent<Rigidbody2D>().AddForce((mouseDir.normalized * 3000f * mouseDir.magnitude) - prevForce * 0.92f); //собственно, движение объекта
+            prevForce = mouseDir.normalized * 3000f * mouseDir.magnitude;
         }
 
     }
 
     void FixedUpdate()
     {
+        if (Input.GetButtonDown("Jump") && grounded)
+        {
+            //body.AddForce(); // -В чём сила брат? -В ньютанах. 
+            body.AddForceAtPosition(new Vector2(0f, force), body.position);
+            grounded = false;
+        }
         Vector2 position = body.position;
-        Vector2 move = new Vector2(horizontal, 0);
-        position += move * speed * Time.deltaTime;
-        body.position = position;
+        //Vector2 move = new Vector2(, 0);
+        position.x += horizontal * speed * Time.deltaTime;
+        body.MovePosition(position);
     }
 
 }
