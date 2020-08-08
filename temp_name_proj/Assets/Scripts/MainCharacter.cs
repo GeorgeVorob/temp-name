@@ -19,11 +19,19 @@ public class MainCharacter : MonoBehaviour
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
+       // RigidbodyInterpolation2D a = new RigidbodyInterpolation2D();
+       // var a =body.interpolation;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetButtonDown("Jump") && grounded)
+        {
+            //body.AddForce(); // -В чём сила брат? -В ньютанах. 
+            body.AddForceAtPosition(new Vector2(0f, force), body.position);
+            grounded = false;
+        }
         horizontal= Input.GetAxis("Horizontal"); 
         /* Обработка нажатия кнопки прыжка */
 
@@ -64,16 +72,14 @@ public class MainCharacter : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (Input.GetButtonDown("Jump") && grounded)
-        {
-            //body.AddForce(); // -В чём сила брат? -В ньютанах. 
-            body.AddForceAtPosition(new Vector2(0f, force), body.position);
-            grounded = false;
-        }
+        
         Vector2 position = body.position;
         //Vector2 move = new Vector2(, 0);
-        position.x += horizontal * speed * Time.deltaTime;
-        body.MovePosition(position);
+        //position.x += horizontal * speed * Time.deltaTime;
+        // body.position = position;
+        body.velocity = new Vector2(horizontal*speed, body.velocity.y);
+        Debug.Log(body.velocity);
+        
     }
 
 }
