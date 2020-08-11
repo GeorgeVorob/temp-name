@@ -6,10 +6,6 @@ PhysicsMaterial2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-<<<<<<< HEAD:temp_name_proj/Assets/Prefabs/Charecter material.physicsMaterial2D
-  m_Name: Charecter material
-=======
   m_Name: Character Material
->>>>>>> cb760c3cab5742a6b5ee7517e471f75fb0699901:temp_name_proj/Assets/Prefabs/Character Material.physicsMaterial2D
   friction: 0
   bounciness: 0
