@@ -55,7 +55,7 @@ public class MainCharacter : MonoBehaviour
             RaycastHit2D climptop = Physics2D.Raycast(body.position + new Vector2(0.55f, -0.7f), Vector2.right, 0.1f);
             if (climpBottom.collider != null && climptop.collider == null)
             {
-                body.transform.position += (Vector3)new Vector2(0.1f, 0.2f);
+                body.transform.position += new Vector3(0.1f, 0.2f, 0.0f);
                 body.velocity = new Vector2(body.velocity.x, 0);
             }
         }
@@ -66,7 +66,7 @@ public class MainCharacter : MonoBehaviour
             RaycastHit2D climptop = Physics2D.Raycast(body.position + new Vector2(-0.55f, -0.7f), Vector2.right, 0.1f);
             if (climpBottom.collider != null && climptop.collider == null)
             {
-                body.transform.position += (Vector3)new Vector2(-0.1f, 0.2f);
+                body.transform.position += new Vector3(-0.1f, 0.2f, 0.0f);
                 body.velocity = new Vector2(body.velocity.x, 0);
             }
         }
@@ -87,17 +87,18 @@ public class MainCharacter : MonoBehaviour
             if ((hit.collider != null))
             {
                 lastClicked = hit.collider.gameObject;
-            }
 
-            if (telekines.avalible)
-            {
-                if(!telekines.working)
+
+                if (telekines.avalible)
                 {
-                    telekines.Start(lastClicked.GetComponent<Rigidbody2D>());
-                }
-                else
-                {
-                    telekines.Stop();
+                    if (!telekines.working)
+                    {
+                        telekines.Start(lastClicked);
+                    }
+                    else
+                    {
+                        telekines.Stop();
+                    }
                 }
             }
         }
