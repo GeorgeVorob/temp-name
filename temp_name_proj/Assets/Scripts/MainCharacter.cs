@@ -14,6 +14,7 @@ public class MainCharacter : MonoBehaviour
     public bool grounded=false;// Переиенная состояния "на земле"
 
     Telekinesis telekines = new Telekinesis(); //объект телекинеза
+    Grab grab;
 
     GameObject lastClicked; //последний GameObject, на который нажал игрок (при отключенном захвате)
 
@@ -22,8 +23,10 @@ public class MainCharacter : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         telekines.avalible = true;
-       // RigidbodyInterpolation2D a = new RigidbodyInterpolation2D();
-       // var a =body.interpolation;
+        grab = new Grab(this.gameObject);
+        grab.avalible = true;
+        // RigidbodyInterpolation2D a = new RigidbodyInterpolation2D();
+        // var a =body.interpolation;
     }
 
     // Update is called once per frame
@@ -80,7 +83,7 @@ public class MainCharacter : MonoBehaviour
 
         /* Обработка нажатия кнопки прыжка */
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(1))
         {
             RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
@@ -88,17 +91,26 @@ public class MainCharacter : MonoBehaviour
             {
                 lastClicked = hit.collider.gameObject;
 
-
-                if (telekines.avalible)
+                if (grab.avalible)
                 {
-                    if (!telekines.working)
+                    if (!grab.working)
                     {
-                        telekines.Start(lastClicked);
+                        Debug.Log("start grab");
+                        grab.Start(lastClicked);
                     }
                     else
                     {
-                        telekines.Stop();
+                        Debug.Log("stop grab");
+                        grab.Stop();
                     }
+                }
+            }
+            else
+            {
+                if (grab.working)
+                {
+                    Debug.Log("stop grab 2"); //TODO: похоже, с каждой новой абилкой придется городить всё больше if-else для каждого инпута. Не уверен, что это является проблемой.
+                    grab.Stop();
                 }
             }
         }
@@ -112,6 +124,10 @@ public class MainCharacter : MonoBehaviour
         if(telekines.working)
         {
             telekines.Work();
+        }
+        if(grab.working)
+        {
+            grab.Work();
         }
 
     }
