@@ -3331,6 +3331,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8928344505399653360, guid: 60c5b8a931062174e98341487d4e24dd, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: 24a19ffe66eb0ba48b7dbd6571afa8f4, type: 2}
+    - target: {fileID: 8928344505399653360, guid: 60c5b8a931062174e98341487d4e24dd, type: 3}
+      propertyPath: m_SleepingMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8928344505399653360, guid: 60c5b8a931062174e98341487d4e24dd, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8928344505399653360, guid: 60c5b8a931062174e98341487d4e24dd, type: 3}
+      propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8928344505399653362, guid: 60c5b8a931062174e98341487d4e24dd, type: 3}
       propertyPath: m_Name
       value: MainCharacter
