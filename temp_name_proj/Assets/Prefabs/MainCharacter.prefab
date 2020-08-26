@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8928344505399653360}
   - component: {fileID: 8928344505399653361}
   - component: {fileID: 8928344505399653365}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: MainCharacter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,9 +101,9 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 6200000, guid: c5197ef62e7778f45a89ed8aa4f05ae3, type: 2}
+  m_Material: {fileID: 6200000, guid: 24a19ffe66eb0ba48b7dbd6571afa8f4, type: 2}
   m_Interpolate: 1
-  m_SleepingMode: 1
+  m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &8928344505399653361
@@ -147,3 +147,4 @@ MonoBehaviour:
   speed: 7
   force: 25000
   grounded: 0
+  hangedOn: 0

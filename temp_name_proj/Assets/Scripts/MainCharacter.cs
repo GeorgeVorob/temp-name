@@ -134,52 +134,67 @@ public class MainCharacter : MonoBehaviour
 
         /* Обработка нажатия кнопки прыжка */
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonUp(1))
         {
-            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-
-            if ((hit.collider != null))
+            if(grab.holding && !grab.crutch)
             {
-                lastClicked = hit.collider.gameObject;
-
-                if (grab.avalible)
-                {
-                    if (!grab.working)
-                    {
-                        Debug.Log("start grab");
-                        grab.Start(lastClicked);
-                    }
-                    else
-                    {
-                        Debug.Log("stop grab");
-                        grab.Stop();
-                    }
-                }
+                grab.Stop();
+            }
+            grab.crutch = false;
+        }
+        if(Input.GetMouseButtonDown(0))
+        {
+            if(grab.holding)
+            {
+                grab.Hlabysh(grab.body);
             }
             else
             {
-                if (grab.working)
+                RaycastHit2D hit = Physics2D.Raycast(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position,grab.range*2);
+                Debug.DrawRay(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position,Color.red,0.8f);
+                if(hit.collider !=null)
                 {
-                    Debug.Log("stop grab 2"); //TODO: похоже, с каждой новой абилкой придется городить всё больше if-else для каждого инпута. Не уверен, что это является проблемой.
-                    grab.Stop();
+                    grab.Hlabysh(hit.collider.gameObject.GetComponent<Rigidbody2D>());
                 }
             }
         }
-
     }
-
     void FixedUpdate()
     {
-        if(!hangedOn)
+
+        if (Input.GetMouseButton(1)) //Этот метод вызывается каждый кадр, если зажата ПКМ, не путать с Input.GetMouseButtonDown
+        {
+                RaycastHit2D hit = Physics2D.Raycast(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position);
+                Debug.DrawRay(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position);
+
+                if (hit.collider != null)
+                {
+                Debug.Log(hit.collider.name);
+                    if (!grab.holding)
+                    {
+                        if (hit.collider.name != "Tilemap")
+                        {
+                            grab.Pull(hit.collider.gameObject);
+                        }
+                        else
+                        {
+                        //grab.PullReverse(hit.point);
+                        }
+                    }
+                }
+        }
+        if (grab.holding)
+        {
+            grab.Work();
+        }
+        
+
+        if (!hangedOn)
         body.velocity = new Vector2(horizontal*speed, body.velocity.y);
        // Debug.Log(body.velocity);
         if(telekines.working)
         {
             telekines.Work();
-        }
-        if(grab.working)
-        {
-            grab.Work();
         }
 
     }
