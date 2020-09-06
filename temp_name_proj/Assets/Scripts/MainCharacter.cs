@@ -136,27 +136,16 @@ public class MainCharacter : MonoBehaviour
 
         if (Input.GetMouseButtonUp(1))
         {
-            if(grab.holding && !grab.crutch)
+            if(grab.holding) //Вернуть  && !grab.crutch для второго клика для сброса захвата
             {
                 grab.Stop();
             }
             grab.crutch = false;
+            grab.pullOnCoolDown = false;
         }
         if(Input.GetMouseButtonDown(0))
         {
-            if(grab.holding)
-            {
-                grab.Hlabysh(grab.body);
-            }
-            else
-            {
-                RaycastHit2D hit = Physics2D.Raycast(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position,grab.range*2);
-                Debug.DrawRay(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position,Color.red,0.8f);
-                if(hit.collider !=null)
-                {
-                    grab.Hlabysh(hit.collider.gameObject.GetComponent<Rigidbody2D>());
-                }
-            }
+                grab.Hlabysh();
         }
     }
     void FixedUpdate()
@@ -185,9 +174,9 @@ public class MainCharacter : MonoBehaviour
         }
         if (grab.holding)
         {
-            grab.Work();
+            grab.Hold();
         }
-        
+
 
         if (!hangedOn)
         body.velocity = new Vector2(horizontal*speed, body.velocity.y);
