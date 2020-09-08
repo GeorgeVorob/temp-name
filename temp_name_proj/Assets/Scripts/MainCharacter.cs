@@ -35,16 +35,6 @@ public class MainCharacter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetButtonDown("Jump") && grounded)
-        {
-            //body.AddForce(); // -В чём сила брат? -В ньютанах.
-            body.isKinematic = false;
-            body.AddForce(new Vector2(0f, force));
-            grounded = false;
-            hangedOn = false;
-            //body.gravityScale = 1;
-            //body.simulated = true;
-        }
 
         if (!hangedOn)
         {
@@ -61,54 +51,12 @@ public class MainCharacter : MonoBehaviour
 
             horizontal = Input.GetAxis("Horizontal");
 
-            if (horizontal > 0)
+            if (horizontal != 0)
             {
-                RaycastHit2D climpBottom = Physics2D.Raycast(body.position + new Vector2(0.55f, -0.9f), Vector2.right, 0.1f);
-                RaycastHit2D climptop = Physics2D.Raycast(body.position + new Vector2(0.55f, -0.7f), Vector2.right, 0.1f);
-                if (climpBottom.collider != null && climptop.collider == null)
-                {
-                    body.transform.position += new Vector3(0.1f, 0.2f, 0.0f);
-                    body.velocity = new Vector2(body.velocity.x, 0);
-                }
-                RaycastHit2D HangOnBottom = Physics2D.Raycast(body.position + new Vector2(0.55f, 0.7f), Vector2.right, 0.1f);
-                RaycastHit2D HangOnTop = Physics2D.Raycast(body.position + new Vector2(0.55f, 0.9f), Vector2.right, 0.1f);
-                if (HangOnBottom.collider != null && HangOnTop.collider == null && body.velocity.y <= 0)
-                {
-                    grounded = true;
-                    hangedOn = true;
-                    //body.gravityScale = 0;
-                    Vector2 cornerRightTop = new Vector2(0.5f, 0.9f);
-                    body.position = HangOnBottom.collider.ClosestPoint(body.position + cornerRightTop) - cornerRightTop;
-                    body.isKinematic = true;
-                    body.velocity = new Vector2(0, 0);
-                    //body.gravityScale = 0;
-                }
+                Climp(horizontal);
+                HangOn(horizontal);
             }
-
-            if (horizontal < 0)
-            {
-                RaycastHit2D climpBottom = Physics2D.Raycast(body.position + new Vector2(-0.55f, -0.9f), Vector2.left, 0.1f);
-                RaycastHit2D climptop = Physics2D.Raycast(body.position + new Vector2(-0.55f, -0.7f), Vector2.left, 0.1f);
-                if (climpBottom.collider != null && climptop.collider == null)
-                {
-                    body.transform.position += new Vector3(-0.1f, 0.2f, 0.0f);
-                    body.velocity = new Vector2(body.velocity.x, 0);
-                }
-                RaycastHit2D HangOnBottom = Physics2D.Raycast(body.position + new Vector2(-0.55f, 0.7f), Vector2.left, 0.1f);
-                RaycastHit2D HangOnTop = Physics2D.Raycast(body.position + new Vector2(-0.55f, 0.9f), Vector2.left, 0.1f);
-                if (HangOnBottom.collider != null && HangOnTop.collider == null && body.velocity.y <= 0)
-                {
-                    grounded = true;
-                    hangedOn = true;
-                    //body.gravityScale = 0;
-                    Vector2 cornerRightTop = new Vector2(-0.5f, 0.9f);
-                    body.position = HangOnBottom.collider.ClosestPoint(body.position + cornerRightTop) - cornerRightTop;
-                    body.isKinematic = true;
-                    body.velocity = new Vector2(0, 0);
-                    //body.gravityScale = 0;
-                }
-
-            }
+            
         }
         else
         {
@@ -117,22 +65,28 @@ public class MainCharacter : MonoBehaviour
                 float vertical = Input.GetAxis("Vertical");
                 if (vertical < 0)
                 {
-                    //body.simulated = true;
-                    body.isKinematic = false;
-                    grounded = false;
-                    hangedOn = false;
+                    set_free();
+                }
+            }
+            else
+            {
+                RaycastHit2D HangOnRight = Physics2D.Raycast(body.position + new Vector2(0.55f, 0.8f), Vector2.right, 0.1f);
+                RaycastHit2D HangOnLeft = Physics2D.Raycast(body.position + new Vector2(-0.55f, 0.8f), Vector2.left, 0.1f);
+                if (HangOnRight.collider == null && HangOnLeft.collider==null)
+                {
+                    set_free();
                 }
             }
         }
-
-        /*if (horizontal < 0)
-        {
-            RaycastHit2D climpBottom = Physics2D.Raycast(body.position + new Vector2(-0.55f, -0.9f), Vector2.left, 0.1f);
-            RaycastHit2D climptop = Physics2D.Raycast(body.position + new Vector2(-0.55f, -0.6f), Vector2.left, 0.1f);
-            if (climpBottom.collider != null && climptop.collider == null) body.AddForce(new Vector2(0, 900f));
-        }*/
-
         /* Обработка нажатия кнопки прыжка */
+        if (Input.GetButtonDown("Jump") && grounded)
+        {
+            horizontal = Input.GetAxis("Horizontal");
+            //body.AddForce(); // -В чём сила брат? -В ньютанах.
+            Debug.Log(horizontal);
+            body.AddForce(new Vector2(0f, force));
+            set_free();
+        }
 
         if (Input.GetMouseButtonUp(1))
         {
@@ -148,6 +102,42 @@ public class MainCharacter : MonoBehaviour
                 grab.Hlabysh();
         }
     }
+
+    private void Climp(float horizontal)
+    {
+        horizontal=(float)Math.Round(horizontal);
+        RaycastHit2D climpBottom = Physics2D.Raycast(body.position + new Vector2(0.55f*horizontal, -0.9f), new Vector2(horizontal,0), 0.1f);
+        RaycastHit2D climptop = Physics2D.Raycast(body.position + new Vector2(0.55f * horizontal, -0.7f), new Vector2(horizontal, 0), 0.1f);
+        if (climpBottom.collider != null && climptop.collider == null)
+        {
+            body.position = climpBottom.collider.ClosestPoint(body.position + new Vector2(0.55f * horizontal, -0.7f)) + new Vector2(0.5f * horizontal*-1, 1f);
+            body.velocity = new Vector2(body.velocity.x, 0);
+        }
+    }
+
+    private void HangOn(float horizontal)
+    {
+        horizontal = (float)Math.Round(horizontal);
+        RaycastHit2D HangOnBottom = Physics2D.Raycast(body.position + new Vector2(0.55f* horizontal, 0.7f), new Vector2(horizontal, 0), 0.1f);
+        RaycastHit2D HangOnTop = Physics2D.Raycast(body.position + new Vector2(0.55f* horizontal, 0.9f), new Vector2(horizontal, 0), 0.1f);
+        if (HangOnBottom.collider != null && HangOnTop.collider == null && body.velocity.y <= 0)
+        {
+            grounded = true;
+            hangedOn = true;
+            Vector2 cornerTop = new Vector2(0.5f*horizontal, 0.9f);
+            body.position = HangOnBottom.collider.ClosestPoint(body.position + cornerTop) - cornerTop;
+            body.isKinematic = true;
+            body.velocity = new Vector2(0, 0);
+        }
+    }
+
+    private void set_free()
+    {
+        body.isKinematic = false;
+        grounded = false;
+        hangedOn = false;
+    }
+
     void FixedUpdate()
     {
 
