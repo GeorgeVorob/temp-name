@@ -148,3 +148,7 @@ MonoBehaviour:
   force: 25000
   grounded: 0
   hangedOn: 0
+  grab_pull_avalible: 1
+  grab_hold_avalible: 1
+  grab_hlabysh_avalible: 1
+  grab_range: 2

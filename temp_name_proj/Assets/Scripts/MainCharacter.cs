@@ -17,17 +17,22 @@ public class MainCharacter : MonoBehaviour
     public bool hangedOn = false;
 
     Telekinesis telekines = new Telekinesis(); //объект телекинеза
-    Grab grab;
 
-    GameObject lastClicked; //последний GameObject, на который нажал игрок (при отключенном захвате)
+    Grab grab;
+    public bool grab_pull_avalible = true;
+    public bool grab_hold_avalible = true;
+    public bool grab_hlabysh_avalible = true;
+    public float grab_range = 2.0f;
 
     // Start is called before the first frame update
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
         telekines.avalible = true;
-        grab = new Grab(this.gameObject);
-        grab.avalible = true;
+        grab = new Grab(this.gameObject, grab_range);
+        grab.holdAvalible = grab_hold_avalible;
+        grab.pullAvalible = grab_pull_avalible;
+        grab.hlabyshAvalible = grab_hlabysh_avalible;
         // RigidbodyInterpolation2D a = new RigidbodyInterpolation2D();
         // var a =body.interpolation;
     }
@@ -143,8 +148,8 @@ public class MainCharacter : MonoBehaviour
 
         if (Input.GetMouseButton(1)) //Этот метод вызывается каждый кадр, если зажата ПКМ, не путать с Input.GetMouseButtonDown
         {
-                RaycastHit2D hit = Physics2D.Raycast(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position);
-                Debug.DrawRay(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position);
+                RaycastHit2D hit = Physics2D.Raycast(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position,1000f); //TODO: переработать это под геймпады(ровно как и все прочие инпуты)
+                Debug.DrawRay(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position); //DrawRay не умеет в длину луча, действительный луч имеет длину в 1000f
 
                 if (hit.collider != null)
                 {

@@ -134,10 +134,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: box (1)
       objectReference: {fileID: 0}
-    - target: {fileID: 7403879795748438631, guid: 560e283b333d8084e850b1ada40da3a7, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7403879795748438651, guid: 560e283b333d8084e850b1ada40da3a7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 7.8247213
