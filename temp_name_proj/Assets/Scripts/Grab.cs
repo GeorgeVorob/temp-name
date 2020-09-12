@@ -10,7 +10,8 @@ namespace Assets.Scripts
     class Grab
     {
         public float range = 2.0f;
-        public float power = 100f;
+        public float pullPower = 100f;  //Эти предустановленные значения не имеют смысла из-за конструктора, скорее просто настройки по умолчанию
+        public float hlabyshPower = 900f;
         public bool crutch = true;
         public bool pullOnCoolDown = false;
         private bool tryingToUnhold = false;
@@ -29,12 +30,14 @@ namespace Assets.Scripts
         private BoxCollider2D ownercollider;
         private Vector2 prevForce = new Vector2(0f, 0f);
         public Boolean holding { get; set; }
-        public Grab(GameObject owner, float range)
+        public Grab(GameObject owner, float range, float pull_power,float hlabysh_power)
         {
             this.owner = owner;
             this.ownerBody = owner.GetComponent<Rigidbody2D>();
             ownercollider = owner.GetComponent<BoxCollider2D>();
             this.range = range;
+            pullPower = pull_power;
+            hlabyshPower = hlabysh_power;
         }
         public void Start(GameObject grabbingObject)
         {
@@ -48,12 +51,11 @@ namespace Assets.Scripts
         }
         public void Hold()
         {
-            mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 point = mousePos - (Vector2)ownerBody.transform.position; //TODO: это тоже переделать под геймпады
-            point = point.normalized * range;
+            Vector2 point = Util.AimDIr() * range;
             Dir = (Vector2)ownerBody.transform.position + point - (Vector2)grabbingbody.transform.position;
             Vector2 owner_body = grabbingbody.position - ownerBody.position;
             RaycastHit2D hit = Physics2D.Raycast(ownerBody.position, owner_body, owner_body.magnitude);
+
             //Debug.Log(hit.collider);
             //if (hit.collider != null && hit.collider.name == "Tilemap")
             //    Debug.Log("tilemap reason");
@@ -92,8 +94,10 @@ namespace Assets.Scripts
             {
                 Rigidbody2D body = grabbingObject.GetComponent<Rigidbody2D>();
                 Vector2 dir = ownerBody.position - body.position;
+                Debug.DrawLine(ownerBody.position, body.position,Color.green);
                 dir.y += 1f;
-                if (dir.magnitude <= range * 1.2 && holdAvalible)
+                //Debug.Log($"magnitude: {{dir.magnitude}}");
+                if (dir.magnitude <= range * 1.5 && holdAvalible) //ЕСЛИ ПЕРСОНАЖ ДВИГАЕТ САМ СЕБЯ И PULL НЕ ПЕРЕХОДИТ В HOLD ТО ЭТО ИЗ-ЗА ЭТОГО
                 {
                     this.grabbingbody = body;
                    // body.isKinematic = true;
@@ -105,7 +109,7 @@ namespace Assets.Scripts
                 }
                 if (pullAvalible)
                 {
-                    body.AddForce(dir * (power * 1000f) / (float)Math.Pow(dir.magnitude, 3));
+                    body.AddForce(dir * (pullPower * 1000f) / (float)Math.Pow(dir.magnitude, 3));
                 }
             }
         }
@@ -121,7 +125,7 @@ namespace Assets.Scripts
                 }
                 else
                 {
-                    RaycastHit2D hit = Physics2D.Raycast(ownerBody.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - ownerBody.position, range * 2.5f);
+                    RaycastHit2D hit = Physics2D.Raycast(ownerBody.position,Util.AimDIr(), range * 2.5f);
                     Debug.DrawRay(ownerBody.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - ownerBody.position, Color.red, 0.8f);
                     if (hit.collider != null)
                     {
@@ -133,7 +137,7 @@ namespace Assets.Scripts
                 if (dir.magnitude <= range * 2)
                 {
                     holding = false;
-                    throwingbody.AddForce(dir * 900f, ForceMode2D.Impulse);
+                    throwingbody.AddForce(dir * hlabyshPower, ForceMode2D.Impulse);
                     if (throwingbody == this.grabbingbody)
                     {
                         this.Stop();

@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 
 public class MainCharacter : MonoBehaviour
 {
-    Rigidbody2D body;
+    public static Rigidbody2D body;
     float horizontal;// Переменная перемещения по оси х
     public float speed;// Переменная скорости перемещения
     public float force;
@@ -23,16 +23,19 @@ public class MainCharacter : MonoBehaviour
     public bool grab_hold_avalible = true;
     public bool grab_hlabysh_avalible = true;
     public float grab_range = 2.0f;
+    public float grab_pull_power = 100f;
+    public float grab_hlabysh_power = 900f;
 
     // Start is called before the first frame update
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
         telekines.avalible = true;
-        grab = new Grab(this.gameObject, grab_range);
+        grab = new Grab(this.gameObject, grab_range,grab_pull_power,grab_hlabysh_power);
         grab.holdAvalible = grab_hold_avalible;
         grab.pullAvalible = grab_pull_avalible;
         grab.hlabyshAvalible = grab_hlabysh_avalible;
+
         // RigidbodyInterpolation2D a = new RigidbodyInterpolation2D();
         // var a =body.interpolation;
     }
@@ -145,11 +148,10 @@ public class MainCharacter : MonoBehaviour
 
     void FixedUpdate()
     {
-
         if (Input.GetMouseButton(1)) //Этот метод вызывается каждый кадр, если зажата ПКМ, не путать с Input.GetMouseButtonDown
         {
-                RaycastHit2D hit = Physics2D.Raycast(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position,1000f); //TODO: переработать это под геймпады(ровно как и все прочие инпуты)
-                Debug.DrawRay(body.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - body.position); //DrawRay не умеет в длину луча, действительный луч имеет длину в 1000f
+                RaycastHit2D hit = Physics2D.Raycast(body.position, Util.AimDIr(),1000f);
+                Debug.DrawRay(body.position, Util.AimDIr()); //DrawRay не умеет в длину луча, действительный луч имеет длину в 1000f
 
                 if (hit.collider != null)
                 {
