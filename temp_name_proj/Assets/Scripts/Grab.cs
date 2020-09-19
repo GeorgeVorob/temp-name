@@ -149,9 +149,9 @@ namespace Assets.Scripts
         {
             tryingToUnhold = true;
             ContactFilter2D c = new ContactFilter2D();
-            Collider2D[] l = new Collider2D[1];
+            List <Collider2D> l = new List<Collider2D>();
             int i = grabbingbody.OverlapCollider(c, l);
-            if (i != 0) return;
+            if (l.Contains(ownercollider)) return;
             grabbingObject.layer = 0;
             holding = false;
             grabbingbody.gravityScale = 1;
