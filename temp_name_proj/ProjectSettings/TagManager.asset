@@ -14,8 +14,8 @@ TagManager:
   - 
   - 
   - Ignored By Player
-  - 
-  - 
+  - Ignore 0 and 8
+  - player
   - 
   - 
   - 
