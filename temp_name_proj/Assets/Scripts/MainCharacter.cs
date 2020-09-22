@@ -15,6 +15,7 @@ public class MainCharacter : MonoBehaviour
     public float force;
     public bool grounded = false;// Переиенная состояния "на земле"
     public bool hangedOn = false;
+    public bool wall = false;
 
     Telekinesis telekines = new Telekinesis(); //объект телекинеза
 
@@ -46,7 +47,7 @@ public class MainCharacter : MonoBehaviour
 
         if (!hangedOn)
         {
-            RaycastHit2D leftFeet = Physics2D.Raycast(body.position + new Vector2(-0.5f, -0.9f), Vector2.down, 0.05f);
+            /*RaycastHit2D leftFeet = Physics2D.Raycast(body.position + new Vector2(-0.5f, -0.9f), Vector2.down, 0.05f);
             RaycastHit2D RightFeet = Physics2D.Raycast(body.position + new Vector2(0.5f, -0.9f), Vector2.down, 0.05f);
             if (leftFeet.collider != null || RightFeet.collider != null)
             {
@@ -55,7 +56,7 @@ public class MainCharacter : MonoBehaviour
             else
             {
                 grounded = false;
-            }
+            }*/
 
             horizontal = Input.GetAxis("Horizontal");
 
@@ -89,9 +90,6 @@ public class MainCharacter : MonoBehaviour
         /* Обработка нажатия кнопки прыжка */
         if (Input.GetButtonDown("Jump") && grounded)
         {
-            horizontal = Input.GetAxis("Horizontal");
-            //body.AddForce(); // -В чём сила брат? -В ньютанах.
-            Debug.Log(horizontal);
             body.AddForce(new Vector2(0f, force));
             set_free();
         }
@@ -109,41 +107,6 @@ public class MainCharacter : MonoBehaviour
         {
                 grab.Hlabysh();
         }
-    }
-
-    private void Climp(float horizontal)
-    {
-        horizontal=(float)Math.Round(horizontal);
-        RaycastHit2D climpBottom = Physics2D.Raycast(body.position + new Vector2(0.55f*horizontal, -0.9f), new Vector2(horizontal,0), 0.1f);
-        RaycastHit2D climptop = Physics2D.Raycast(body.position + new Vector2(0.55f * horizontal, -0.7f), new Vector2(horizontal, 0), 0.1f);
-        if (climpBottom.collider != null && climptop.collider == null)
-        {
-            body.position = climpBottom.collider.ClosestPoint(body.position + new Vector2(0.55f * horizontal, -0.7f)) + new Vector2(0.5f * horizontal*-1, 1f);
-            body.velocity = new Vector2(body.velocity.x, 0);
-        }
-    }
-
-    private void HangOn(float horizontal)
-    {
-        horizontal = (float)Math.Round(horizontal);
-        RaycastHit2D HangOnBottom = Physics2D.Raycast(body.position + new Vector2(0.55f* horizontal, 0.7f), new Vector2(horizontal, 0), 0.1f);
-        RaycastHit2D HangOnTop = Physics2D.Raycast(body.position + new Vector2(0.55f* horizontal, 0.9f), new Vector2(horizontal, 0), 0.1f);
-        if (HangOnBottom.collider != null && HangOnTop.collider == null && body.velocity.y <= 0)
-        {
-            grounded = true;
-            hangedOn = true;
-            Vector2 cornerTop = new Vector2(0.5f*horizontal, 0.9f);
-            body.position = HangOnBottom.collider.ClosestPoint(body.position + cornerTop) - cornerTop;
-            body.isKinematic = true;
-            body.velocity = new Vector2(0, 0);
-        }
-    }
-
-    private void set_free()
-    {
-        body.isKinematic = false;
-        grounded = false;
-        hangedOn = false;
     }
 
     void FixedUpdate()
@@ -183,6 +146,57 @@ public class MainCharacter : MonoBehaviour
             telekines.Work();
         }
 
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        Vector2 bottom_middle_point = (Vector2)this.transform.localScale * new Vector2(0, -1f);
+        Vector2 Bottom_checker=collision.collider.ClosestPoint((Vector2)this.transform.position + (bottom_middle_point) + new Vector2(0,0.1f));
+        Debug.Log((Vector2)this.transform.position + (bottom_middle_point)+"///"+ Bottom_checker);
+        if (Bottom_checker.y < ((Vector2)this.transform.position + bottom_middle_point).y) grounded = true;
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        Vector2 bottom_middle_point = (Vector2)this.transform.localScale * new Vector2(0, -1f);
+        //Debug.Log(bottom_middle_point);
+        Vector2 Bottom_checker = collision.collider.ClosestPoint((Vector2)this.transform.position + (bottom_middle_point));
+        if (Bottom_checker.y < ((Vector2)this.transform.position + bottom_middle_point).y) grounded = false;
+    }
+
+    private void Climp(float horizontal)
+    {
+        horizontal = (float)Math.Round(horizontal);
+        RaycastHit2D climpBottom = Physics2D.Raycast(body.position + new Vector2(0.55f * horizontal, -0.9f), new Vector2(horizontal, 0), 0.1f);
+        RaycastHit2D climptop = Physics2D.Raycast(body.position + new Vector2(0.55f * horizontal, -0.7f), new Vector2(horizontal, 0), 0.1f);
+        if (climpBottom.collider != null && climptop.collider == null)
+        {
+            body.position = climpBottom.collider.ClosestPoint(body.position + new Vector2(0.55f * horizontal, -0.7f)) + new Vector2(0.5f * horizontal * -1, 1f);
+            body.velocity = new Vector2(body.velocity.x, 0);
+        }
+    }
+
+    private void HangOn(float horizontal)
+    {
+        horizontal = (float)Math.Round(horizontal);
+        RaycastHit2D HangOnBottom = Physics2D.Raycast(body.position + new Vector2(0.55f * horizontal, 0.7f), new Vector2(horizontal, 0), 0.1f);
+        RaycastHit2D HangOnTop = Physics2D.Raycast(body.position + new Vector2(0.55f * horizontal, 0.9f), new Vector2(horizontal, 0), 0.1f);
+        if (HangOnBottom.collider != null && HangOnTop.collider == null && body.velocity.y <= 0)
+        {
+            grounded = true;
+            hangedOn = true;
+            Vector2 cornerTop = new Vector2(0.5f * horizontal, 0.9f);
+            body.position = HangOnBottom.collider.ClosestPoint(body.position + cornerTop) - cornerTop;
+            body.isKinematic = true;
+            body.velocity = new Vector2(0, 0);
+        }
+    }
+
+    private void set_free()
+    {
+        body.isKinematic = false;
+        grounded = false;
+        hangedOn = false;
     }
 
 }
