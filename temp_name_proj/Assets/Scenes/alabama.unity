@@ -3339,6 +3339,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainCharacter
       objectReference: {fileID: 0}
+    - target: {fileID: 8928344505399653362, guid: 60c5b8a931062174e98341487d4e24dd, type: 3}
+      propertyPath: m_Layer
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 8928344505399653366, guid: 60c5b8a931062174e98341487d4e24dd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.28

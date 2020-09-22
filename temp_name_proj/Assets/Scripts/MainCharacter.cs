@@ -155,7 +155,6 @@ public class MainCharacter : MonoBehaviour
 
                 if (hit.collider != null)
                 {
-                Debug.Log(hit.collider.name);
                     if (!grab.holding)
                     {
                         if (hit.collider.name != "Tilemap")

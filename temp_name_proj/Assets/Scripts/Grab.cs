@@ -15,6 +15,7 @@ namespace Assets.Scripts
         public bool crutch = true;
         public bool pullOnCoolDown = false;
         private bool tryingToUnhold = false;
+        private bool tryingToGetOut = false;
 
         public bool pullAvalible = true;
         public bool holdAvalible = true;
@@ -68,23 +69,43 @@ namespace Assets.Scripts
                  return;
             }
 
-            Collider2D[] bodyCollider = new Collider2D[1];
-            grabbingbody.GetAttachedColliders(bodyCollider);
-            if ((owner.transform.position.y + 0.1f >= grabbingObject.transform.position.y + grabbingcollider.size.y / 2.0f + ownercollider.size.y / 2.0f) && (Dir.y <= 0.0f))
-            {
-                grabbingObject.layer = 0;
-            }
-            else
+            //Collider2D[] bodyCollider = new Collider2D[1];
+            //grabbingbody.GetAttachedColliders(bodyCollider);
+            //if ((owner.transform.position.y + 0.1f >= grabbingObject.transform.position.y + grabbingcollider.size.y / 2.0f + ownercollider.size.y / 2.0f) && (Dir.y <= 0.0f))
+            //{
+            //    grabbingObject.layer = 0;
+            //}
+            //else
+            //{
+            //    grabbingObject.layer = 8;
+            //}
+            //Debug.Log($"DIFFERENCE:{owner.transform.position.y + 1.0f - (grabbingObject.transform.position.y + grabbingcollider.size.y / 2.0f + ownercollider.size.y / 2.0f)}");
+
+            hit = Physics2D.Raycast(grabbingbody.position,Dir,1000f,~2);
+
+            if(hit.collider!=null && (Math.Abs(Dir.x) >= ownercollider.size.x + grabbingcollider.size.x || Math.Abs(Dir.y) >= ownercollider.size.y + grabbingcollider.size.y || Dir.magnitude >= range))
             {
                 grabbingObject.layer = 8;
             }
-            //Debug.Log($"DIFFERENCE:{owner.transform.position.y + 1.0f - (grabbingObject.transform.position.y + grabbingcollider.size.y / 2.0f + ownercollider.size.y / 2.0f)}");
+            else
+            {
+                tryingToGetOut = true;
+            }
             Vector2 force = (Dir.normalized * 30000f * Dir.magnitude) - prevForce * 0.92f;
             prevForce = Dir.normalized * 30000f * Dir.magnitude;
             grabbingbody.AddForce(force);
+            Debug.DrawRay(grabbingbody.position,Dir,Color.cyan);
             if (tryingToUnhold)
             {
                 Stop();
+            }
+            if(tryingToGetOut)
+            {
+                ContactFilter2D c = new ContactFilter2D();
+                List<Collider2D> l = new List<Collider2D>();
+                int i = grabbingbody.OverlapCollider(c, l); //TODO: сделать из этого функцию или найти альтернативу
+                if (!l.Contains(ownercollider)) grabbingObject.layer = 0;
+                tryingToGetOut = false;
             }
 
         }
