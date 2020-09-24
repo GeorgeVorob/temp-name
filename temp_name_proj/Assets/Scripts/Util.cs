@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts
 {
@@ -19,6 +20,10 @@ namespace Assets.Scripts
             {
                 return ((Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - MainCharacter.body.position).normalized;
             }
+        }
+        public static void GameOver()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name); //Перезагрузка сцены
         }
     }
 }
