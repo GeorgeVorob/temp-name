@@ -19,7 +19,7 @@ public class MainCharacter : MonoBehaviour
     bool isInvincible;
     float invincibleTimer;
 
-    public float jump_delay = 0.5f;
+    public float jump_delay = 0.05f;
     public bool grounded = false;// Переиенная состояния "на земле"
     public bool hangedOn = false;
     public bool wall = false;
@@ -73,6 +73,13 @@ public class MainCharacter : MonoBehaviour
             }
         }
 
+        if (Input.GetButtonDown("Jump") && grounded && !is_jumped)
+        {
+            set_free();
+            body.AddForce(new Vector2(0f, force));
+            is_jumped = true;
+        }
+
         if (hangedOn)
         {
             if (Input.GetAxis("Vertical") != 0)
@@ -94,12 +101,6 @@ public class MainCharacter : MonoBehaviour
             }
         }
         /* Обработка нажатия кнопки прыжка */
-        if (Input.GetButtonDown("Jump") && grounded && !is_jumped)
-        {
-            body.AddForce(new Vector2(0f, force));
-            is_jumped = true;
-            set_free();
-        }
 
         if (Input.GetMouseButtonUp(1))
         {
@@ -172,17 +173,17 @@ public class MainCharacter : MonoBehaviour
             Vector2 central_checker = collision.collider.ClosestPoint(transform.position);
             Vector2 top_checker = collision.collider.ClosestPoint((Vector2)transform.position + top_middle_point);
             Climp(horizontal, central_checker);
-            //HangOn(horizontal, top_checker);
+            HangOn(horizontal, top_checker);
         }
 
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    /*private void OnCollisionExit2D(Collision2D collision)
     {
         //Debug.Log(bottom_middle_point);
         Vector2 bottom_checker = collision.collider.ClosestPoint((Vector2)this.transform.position + (bottom_middle_point));
         if (bottom_checker.y < ((Vector2)this.transform.position + bottom_middle_point).y) grounded = false;
-    }
+    }*/
 
     private void Climp(float horizontal, Vector2 central_checker)
     {
@@ -197,16 +198,18 @@ public class MainCharacter : MonoBehaviour
 
     private void HangOn(float horizontal, Vector2 top_checker)
     {
-        horizontal = (float)Math.Round(horizontal);
+        horizontal =  Math.Sign(horizontal);
         //RaycastHit2D HangOnBottom = Physics2D.Raycast(body.position + new Vector2(0.55f * horizontal, 0.7f), new Vector2(horizontal, 0), 0.1f);
         //RaycastHit2D HangOnTop = Physics2D.Raycast(body.position + new Vector2(0.55f * horizontal, 0.9f), new Vector2(horizontal, 0), 0.1f);
-        if (top_checker.y < (top_middle_point + (Vector2)this.transform.position).y 
+        if (Math.Round(top_checker.y, 1) < Math.Round((top_middle_point + (Vector2)this.transform.position).y,1) 
             && top_checker.y > (hang_middle_point + (Vector2)this.transform.position).y 
-            && body.velocity.y <= 0)
+            && body.velocity.y <= 0
+            && (Math.Sign(top_checker.x-this.transform.position.x)==horizontal))
         {
+            Debug.Log(top_checker.y + "///" + (top_middle_point + (Vector2)this.transform.position).y);
             grounded = true;
             hangedOn = true;
-            Vector2 cornerTop = new Vector2(0.5f * horizontal, 0.9f);
+            Vector2 cornerTop = new Vector2(0.5f * horizontal, 1f) * transform.localScale;
             body.position = top_checker - cornerTop;
             body.isKinematic = true;
             body.velocity = new Vector2(0, 0);
