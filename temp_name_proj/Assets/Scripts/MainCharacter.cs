@@ -49,7 +49,7 @@ public class MainCharacter : MonoBehaviour
         jump_delay_timer = jump_delay;
         bottom_middle_point = transform.localScale * new Vector2(0, -1f);
         top_middle_point = transform.localScale * new Vector2(0, 1f);
-        step_middle_point = transform.localScale * new Vector2(0, -0.8f);
+        step_middle_point = transform.localScale * new Vector2(0, -0.75f);
         hang_middle_point = transform.localScale * new Vector2(0, 0.8f);
 
         telekines.avalible = true;
@@ -191,7 +191,7 @@ public class MainCharacter : MonoBehaviour
         if (central_checker.y > (bottom_middle_point + (Vector2)this.transform.position).y 
             && central_checker.y< (step_middle_point + (Vector2)this.transform.position).y)
         {
-            body.position = central_checker + new Vector2(0.5f * horizontal * -1, 1f);
+            body.position = central_checker + new Vector2(1f * horizontal * -1, 1f);
             body.velocity = new Vector2(body.velocity.x, 0);
         }
     }
