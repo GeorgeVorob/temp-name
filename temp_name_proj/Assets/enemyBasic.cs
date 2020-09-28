@@ -1,17 +1,26 @@
-﻿using System;
+﻿using Assets.Scripts;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 public class enemyBasic : MonoBehaviour
 {
-    float horizontal;// Переменная перемещения по оси х
+    Random random = new Random();
+    float horizontal;
     public float speed = 7;// Переменная скорости перемещения
-    public float shootCoolDownTime = 1.0f;
-    private float shootTimer = 0.0f;
+
+    public float shootCoolDownTime = 4.0f;
+    public int shootBurstAmount = 3;
+    private float CurrentshootCoolDownTime = 0.0f;
+    private float burstInterval = 0.2f;
+    private float CurrentburstInterval = 0.0f;
+    private int CurrentshootBurstAmount=0;
     private bool shootAvalible = true;
+
     Rigidbody2D body;
-    enum Status {idle, approaching}
+    enum Status {idle, approaching, Battle, Shoot}
     Status status = Status.idle;
 
     public GameObject projectilePrefab;
@@ -19,12 +28,52 @@ public class enemyBasic : MonoBehaviour
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
+        CurrentshootBurstAmount = shootBurstAmount;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Math.Abs((MainCharacter.body.position - body.position).magnitude)<=3.0f)
+        switch(status)
+        {
+            case Status.approaching:
+                statusBattle();
+                break;
+            case Status.idle:
+                statusIdle();
+                break;
+            case Status.Battle:
+                statusBattle();
+                break;
+            case Status.Shoot:
+                statusShoot();
+                break;
+        }
+    }
+    void statusBattle()
+    {
+        if (shootAvalible)
+        {
+            status = Status.Shoot;
+            return;
+        }
+            
+        CurrentshootCoolDownTime -= Time.deltaTime;
+        if (CurrentshootCoolDownTime <= 0)
+        {
+            shootAvalible = true;
+            CurrentshootBurstAmount = shootBurstAmount;
+        }
+        if (Math.Abs((MainCharacter.body.position - body.position).magnitude) > 5.0f)
+        {
+            status = Status.idle;
+            return;
+        }
+        Debug.Log("AAAAAAA");
+    }
+    void statusIdle()
+    {
+        if (Math.Abs((MainCharacter.body.position - body.position).magnitude) <= 5.0f)
         {
             status = Status.approaching;
         }
@@ -32,25 +81,8 @@ public class enemyBasic : MonoBehaviour
         {
             status = Status.idle;
         }
-        switch(status)
-        {
-            case Status.approaching:
-                statusApproaching();
-                break;
-        }
     }
-    void statusApproaching()
-    {
-        if (shootAvalible)
-            shoot();
-        else
-            shootTimer -= Time.deltaTime;
-
-        if (shootTimer <= 0)
-            shootAvalible = true;
-        Debug.Log("AAAAAAA");
-    }
-    void shoot()
+    void statusShoot()
     {
         int horizontal;
         if ((MainCharacter.body.position - body.position).x > 0)
@@ -62,11 +94,26 @@ public class enemyBasic : MonoBehaviour
             horizontal = -1;
         }
 
-        GameObject projectileObject = Instantiate(projectilePrefab, body.position + Vector2.up * 0.5f, Quaternion.identity);
-        projectileObject.layer = 11;
-        projectileBullet projectile = projectileObject.GetComponent<projectileBullet>();
-        projectile.Launch(new Vector2(horizontal, 0));
-        shootTimer = shootCoolDownTime;
-        shootAvalible = false;
+        if (CurrentburstInterval <= 0)
+        {
+            GameObject projectileObject = Instantiate(projectilePrefab, body.position + Vector2.up * 0.5f, Quaternion.identity);
+            projectileObject.layer = 11;
+            projectileBullet projectile = projectileObject.GetComponent<projectileBullet>();
+            projectile.Launch(new Vector2(horizontal, 0));
+
+            CurrentshootBurstAmount--;
+            CurrentburstInterval = burstInterval;
+            Debug.Log(CurrentshootBurstAmount);
+            if (CurrentshootBurstAmount <= 0)
+            {
+                CurrentshootCoolDownTime = shootCoolDownTime;
+                shootAvalible = false;
+                status = Status.Battle;
+            }
+        }
+        else
+        {
+            CurrentburstInterval -= Time.deltaTime;
+        }
     }
 }

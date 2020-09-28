@@ -21,7 +21,7 @@ public class projectileBullet : MonoBehaviour
     }
     public void Launch(Vector2 direction)
     {
-        bulletBody.AddForce(direction * 100f,ForceMode2D.Impulse);
+        bulletBody.AddForce(direction * 500f);
     }
     void OnCollisionEnter2D(Collision2D other)
     {
