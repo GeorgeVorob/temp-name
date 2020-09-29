@@ -95,19 +95,15 @@ namespace Assets.Scripts
             prevForce = Dir.normalized * 30000f * Dir.magnitude;
             grabbingbody.AddForce(force);
             Debug.DrawRay(grabbingbody.position,Dir,Color.cyan);
+            if(tryingToGetOut)
+            {
+                if (!IsGrabbingObjectInsideCharacter()) grabbingObject.layer = 0;
+                tryingToGetOut = false;
+            }
             if (tryingToUnhold)
             {
                 Stop();
             }
-            if(tryingToGetOut)
-            {
-                ContactFilter2D c = new ContactFilter2D();
-                List<Collider2D> l = new List<Collider2D>();
-                int i = grabbingbody.OverlapCollider(c, l); //TODO: сделать из этого функцию или найти альтернативу
-                if (!l.Contains(ownercollider)) grabbingObject.layer = 0;
-                tryingToGetOut = false;
-            }
-
         }
         public void Pull(GameObject grabbingObject) //притягивает объект перед захватом
         {
@@ -141,6 +137,7 @@ namespace Assets.Scripts
                 Rigidbody2D throwingbody;
                 if (holding)
                 {
+                    if (IsGrabbingObjectInsideCharacter()) return;
                     throwingbody = this.grabbingbody;
                     pullOnCoolDown = true;
                 }
@@ -161,24 +158,31 @@ namespace Assets.Scripts
                     throwingbody.AddForce(dir * hlabyshPower, ForceMode2D.Impulse);
                     if (throwingbody == this.grabbingbody)
                     {
-                        this.Stop();
+                        this.Stop(true);
                     }
                 }
             }
         }
-        public void Stop()
+        public void Stop(bool force = false)
         {
-            tryingToUnhold = true;
-            ContactFilter2D c = new ContactFilter2D();
-            List <Collider2D> l = new List<Collider2D>();
-            int i = grabbingbody.OverlapCollider(c, l);
-            if (l.Contains(ownercollider)) return;
+            if (!force)
+            {
+                tryingToUnhold = true;
+                if (IsGrabbingObjectInsideCharacter()) return;
+            }
             grabbingObject.layer = 0;
             holding = false;
             grabbingbody.gravityScale = 1;
             prevForce.Set(0f, 0f);
             Debug.Log("Not holding");
             tryingToUnhold = false;
+        }
+        private bool IsGrabbingObjectInsideCharacter()
+        {
+            ContactFilter2D c = new ContactFilter2D();
+            List<Collider2D> l = new List<Collider2D>();
+            int i = grabbingbody.OverlapCollider(c, l);
+            return l.Contains(ownercollider);
         }
     }
 }

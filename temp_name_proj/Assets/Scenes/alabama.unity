@@ -225,7 +225,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 137650748}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 24a19ffe66eb0ba48b7dbd6571afa8f4, type: 2}
+  m_Material: {fileID: 6200000, guid: 730d2028d4de4374c922b7a0e457754c, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -323,7 +323,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
-  m_Material: {fileID: 6200000, guid: 24a19ffe66eb0ba48b7dbd6571afa8f4, type: 2}
+  m_Material: {fileID: 0}
   m_Interpolate: 1
   m_SleepingMode: 0
   m_CollisionDetection: 1
@@ -3860,6 +3860,10 @@ PrefabInstance:
     - target: {fileID: 8928344505399653362, guid: 60c5b8a931062174e98341487d4e24dd, type: 3}
       propertyPath: m_Name
       value: MainCharacter
+      objectReference: {fileID: 0}
+    - target: {fileID: 8928344505399653365, guid: 60c5b8a931062174e98341487d4e24dd, type: 3}
+      propertyPath: invictibleTime
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 8928344505399653366, guid: 60c5b8a931062174e98341487d4e24dd, type: 3}
       propertyPath: m_LocalPosition.x
