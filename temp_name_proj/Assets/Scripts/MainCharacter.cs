@@ -187,11 +187,14 @@ public class MainCharacter : MonoBehaviour
 
     private void Climp(float horizontal, Vector2 central_checker)
     {
-        horizontal = (float)Math.Round(horizontal);
+        horizontal = Math.Sign(horizontal);
         if (central_checker.y > (bottom_middle_point + (Vector2)this.transform.position).y 
-            && central_checker.y< (step_middle_point + (Vector2)this.transform.position).y)
+            && central_checker.y< (step_middle_point + (Vector2)this.transform.position).y
+            && Math.Sign(central_checker.x-body.position.x)==horizontal)
         {
-            body.position = central_checker + new Vector2(1f * horizontal * -1, 1f);
+            Debug.Log(body.position.x+" // "+central_checker.x);
+            body.position = central_checker + new Vector2(horizontal * -0.5f, 1f);
+            Debug.Log(body.position.x+"//");
             body.velocity = new Vector2(body.velocity.x, 0);
         }
     }
@@ -222,6 +225,7 @@ public class MainCharacter : MonoBehaviour
         grounded = false;
         hangedOn = false;
     }
+
     public void ChangeHealth(float value)
     {
         if (value < 0)
