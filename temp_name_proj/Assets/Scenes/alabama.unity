@@ -213,8 +213,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 7
-  shootCoolDownTime: 4
+  shootCoolDownTime: 1
   shootBurstAmount: 3
+  visionRadius: 5
   projectilePrefab: {fileID: 725524860878141990, guid: 8f661bdfd12ada044ac2b897f2bd76a2, type: 3}
 --- !u!61 &137650750
 BoxCollider2D:

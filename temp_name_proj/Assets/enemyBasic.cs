@@ -13,11 +13,13 @@ public class enemyBasic : MonoBehaviour
 
     public float shootCoolDownTime = 4.0f;
     public int shootBurstAmount = 3;
+    public float visionRadius = 5.0f;
     private float CurrentshootCoolDownTime = 0.0f;
     private float burstInterval = 0.2f;
     private float CurrentburstInterval = 0.0f;
     private int CurrentshootBurstAmount=0;
     private bool shootAvalible = true;
+    //private CircleCollider2D visionCollider;
 
     Rigidbody2D body;
     enum Status {idle, approaching, Battle, Shoot}
@@ -29,16 +31,13 @@ public class enemyBasic : MonoBehaviour
     {
         body = GetComponent<Rigidbody2D>();
         CurrentshootBurstAmount = shootBurstAmount;
+        //visionCollider = transform.GetChild(0).GetComponent<CircleCollider2D>();
     }
-
     // Update is called once per frame
     void Update()
     {
         switch(status)
         {
-            case Status.approaching:
-                statusBattle();
-                break;
             case Status.idle:
                 statusIdle();
                 break;
@@ -64,7 +63,7 @@ public class enemyBasic : MonoBehaviour
             shootAvalible = true;
             CurrentshootBurstAmount = shootBurstAmount;
         }
-        if (Math.Abs((MainCharacter.body.position - body.position).magnitude) > 5.0f)
+        if (Math.Abs((MainCharacter.body.position - body.position).magnitude) > visionRadius)
         {
             status = Status.idle;
             return;
@@ -73,9 +72,9 @@ public class enemyBasic : MonoBehaviour
     }
     void statusIdle()
     {
-        if (Math.Abs((MainCharacter.body.position - body.position).magnitude) <= 5.0f)
+        if (Math.Abs((MainCharacter.body.position - body.position).magnitude) <= visionRadius)
         {
-            status = Status.approaching;
+            status = Status.Battle;
         }
         else
         {
@@ -99,7 +98,8 @@ public class enemyBasic : MonoBehaviour
             GameObject projectileObject = Instantiate(projectilePrefab, body.position + Vector2.up * 0.5f, Quaternion.identity);
             projectileObject.layer = 11;
             projectileBullet projectile = projectileObject.GetComponent<projectileBullet>();
-            projectile.Launch(new Vector2(horizontal, 0));
+            Vector2 launchdir = (MainCharacter.body.position - body.position).normalized;
+            projectile.Launch(launchdir);
 
             CurrentshootBurstAmount--;
             CurrentburstInterval = burstInterval;
