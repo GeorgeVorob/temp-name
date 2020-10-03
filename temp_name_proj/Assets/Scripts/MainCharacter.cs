@@ -16,6 +16,7 @@ public class MainCharacter : MonoBehaviour
     public float maxHP = 100f;
     private float HP;
     public float invictibleTime = 0.5f;
+
     bool isInvincible;
     float invincibleTimer;
 
@@ -30,6 +31,11 @@ public class MainCharacter : MonoBehaviour
     private Vector2 top_middle_point;
     private Vector2 step_middle_point;
     private Vector2 hang_middle_point;
+
+    private bool buf = false;
+    private bool buf1 = false;
+
+    private Collider2D hang_object;
 
     Telekinesis telekines = new Telekinesis(); //объект телекинеза
 
@@ -90,17 +96,7 @@ public class MainCharacter : MonoBehaviour
                     set_free();
                 }
             }
-            else
-            {
-                RaycastHit2D HangOnRight = Physics2D.Raycast(body.position + new Vector2(0.55f, 0.8f), Vector2.right, 0.1f);
-                RaycastHit2D HangOnLeft = Physics2D.Raycast(body.position + new Vector2(-0.55f, 0.8f), Vector2.left, 0.1f);
-                if (HangOnRight.collider == null && HangOnLeft.collider == null)
-                {
-                    set_free();
-                }
-            }
         }
-        /* Обработка нажатия кнопки прыжка */
 
         if (Input.GetMouseButtonUp(1))
         {
@@ -153,8 +149,8 @@ public class MainCharacter : MonoBehaviour
         }
 
         horizontal = Input.GetAxis("Horizontal");
-        if(!hangedOn)
-        body.velocity = new Vector2(horizontal * speed, body.velocity.y);
+        if (!hangedOn)
+            body.velocity = new Vector2(horizontal * speed, body.velocity.y);
         if (telekines.working)
         {
             telekines.Work();
@@ -173,49 +169,60 @@ public class MainCharacter : MonoBehaviour
             Vector2 central_checker = collision.collider.ClosestPoint(transform.position);
             Vector2 top_checker = collision.collider.ClosestPoint((Vector2)transform.position + top_middle_point);
             Climp(horizontal, central_checker);
-            HangOn(horizontal, top_checker);
+            HangOn(horizontal, top_checker, collision);
         }
-
+        if (hang_object != null && collision.collider==hang_object)
+        {
+            if (buf) buf1 = true;
+        }
     }
 
-    /*private void OnCollisionExit2D(Collision2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
         //Debug.Log(bottom_middle_point);
-        Vector2 bottom_checker = collision.collider.ClosestPoint((Vector2)this.transform.position + (bottom_middle_point));
-        if (bottom_checker.y < ((Vector2)this.transform.position + bottom_middle_point).y) grounded = false;
-    }*/
+        if (collision.collider == hang_object && (!buf||!buf1))
+        {
+             set_free();
+             hang_object = null;
+        }
+        if (buf) buf = false;
+    }
 
     private void Climp(float horizontal, Vector2 central_checker)
     {
         horizontal = Math.Sign(horizontal);
-        if (central_checker.y > (bottom_middle_point + (Vector2)this.transform.position).y 
-            && central_checker.y< (step_middle_point + (Vector2)this.transform.position).y
-            && Math.Sign(central_checker.x-body.position.x)==horizontal)
+        if (central_checker.y > (bottom_middle_point + (Vector2)this.transform.position).y
+            && central_checker.y < (step_middle_point + (Vector2)this.transform.position).y
+            && Math.Sign(central_checker.x - body.position.x) == horizontal)
         {
-            Debug.Log(body.position.x+" // "+central_checker.x);
+            Debug.Log(body.position.x + " // " + central_checker.x);
             body.position = central_checker + new Vector2(horizontal * -0.5f, 1f);
-            Debug.Log(body.position.x+"//");
+            Debug.Log(body.position.x + "//");
             body.velocity = new Vector2(body.velocity.x, 0);
         }
     }
 
-    private void HangOn(float horizontal, Vector2 top_checker)
+    private void HangOn(float horizontal, Vector2 top_checker, Collision2D collision)
     {
-        horizontal =  Math.Sign(horizontal);
+        horizontal = Math.Sign(horizontal);
         //RaycastHit2D HangOnBottom = Physics2D.Raycast(body.position + new Vector2(0.55f * horizontal, 0.7f), new Vector2(horizontal, 0), 0.1f);
         //RaycastHit2D HangOnTop = Physics2D.Raycast(body.position + new Vector2(0.55f * horizontal, 0.9f), new Vector2(horizontal, 0), 0.1f);
-        if (Math.Round(top_checker.y, 1) < Math.Round((top_middle_point + (Vector2)this.transform.position).y,1) 
-            && top_checker.y > (hang_middle_point + (Vector2)this.transform.position).y 
+        if (Math.Round(top_checker.y, 1) < Math.Round((top_middle_point + (Vector2)this.transform.position).y, 1)
+            && top_checker.y > (hang_middle_point + (Vector2)this.transform.position).y
             && body.velocity.y <= 0
-            && (Math.Sign(top_checker.x-this.transform.position.x)==horizontal))
+            && (Math.Sign(top_checker.x - this.transform.position.x) == horizontal))
         {
-            Debug.Log(top_checker.y + "///" + (top_middle_point + (Vector2)this.transform.position).y);
+            Debug.Log(top_checker.x + "/*/" + (top_middle_point + (Vector2)this.transform.position).x);
             grounded = true;
             hangedOn = true;
-            Vector2 cornerTop = new Vector2(0.5f * horizontal, 1f) * transform.localScale;
+            Vector2 cornerTop = new Vector2(0.5f * horizontal, 1f)*transform.localScale;
+            top_checker.x = (float)Math.Round(top_checker.x, 1);
+            top_checker.y = (float)Math.Round(top_checker.y, 1);
             body.position = top_checker - cornerTop;
             body.isKinematic = true;
             body.velocity = new Vector2(0, 0);
+            hang_object = collision.collider;
+            buf = true;
         }
     }
 
