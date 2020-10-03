@@ -25,5 +25,10 @@ namespace Assets.Scripts
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name); //Перезагрузка сцены
         }
+        public static LayerMask LayerPhysObjectsOnly() //Если проблемы со слоями нормально не решатся и у нас 
+            //физ. объекты для притягивания будут на больше чем одном слою, то дописать их сюда в маску
+        {
+            return LayerMask.GetMask("Default");
+        }
     }
 }

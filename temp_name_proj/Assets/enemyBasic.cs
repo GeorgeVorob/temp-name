@@ -15,7 +15,8 @@ public class enemyBasic : MonoBehaviour
     public int shootBurstAmount = 3;
     public float visionRadius = 5.0f;
     private float CurrentshootCoolDownTime = 0.0f;
-    private float burstInterval = 0.2f;
+    public float burstInterval = 0.2f;
+    public int scatterDegree = 6;
     private float CurrentburstInterval = 0.0f;
     private int CurrentshootBurstAmount=0;
     private bool shootAvalible = true;
@@ -83,24 +84,14 @@ public class enemyBasic : MonoBehaviour
     }
     void statusShoot()
     {
-        int horizontal;
-        if ((MainCharacter.body.position - body.position).x > 0)
-        {
-            horizontal = 1;
-        }
-        else
-        {
-            horizontal = -1;
-        }
-
         if (CurrentburstInterval <= 0)
         {
             GameObject projectileObject = Instantiate(projectilePrefab, body.position + Vector2.up * 0.5f, Quaternion.identity);
             projectileObject.layer = 11;
             projectileBullet projectile = projectileObject.GetComponent<projectileBullet>();
             Vector2 launchdir = (MainCharacter.body.position - body.position).normalized;
+            launchdir = Quaternion.Euler(0, 0, random.Next(scatterDegree*-1, scatterDegree)) * launchdir;
             projectile.Launch(launchdir);
-
             CurrentshootBurstAmount--;
             CurrentburstInterval = burstInterval;
             Debug.Log(CurrentshootBurstAmount);
