@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1639635701704615985}
   - component: {fileID: 1639635701704615986}
   - component: {fileID: 1639635701704616014}
-  m_Layer: 12
+  m_Layer: 9
   m_Name: enemyBasic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,6 +127,8 @@ MonoBehaviour:
   shootCoolDownTime: 1
   shootBurstAmount: 3
   visionRadius: 5
+  burstInterval: 0.2
+  scatterDegree: 6
   projectilePrefab: {fileID: 725524860878141990, guid: 8f661bdfd12ada044ac2b897f2bd76a2, type: 3}
 --- !u!50 &1639635701704616014
 Rigidbody2D:

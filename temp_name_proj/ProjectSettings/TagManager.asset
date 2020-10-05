@@ -14,10 +14,10 @@ TagManager:
   - 
   - 
   - Ignored By Player
-  - Ignore 0 and 8
+  - enemies
   - player
   - collide all exept enemies
-  - enemies
+  - 
   - 
   - 
   - 
