@@ -29,6 +29,9 @@ namespace Assets.Scripts
         private GameObject grabbingObject;
         private BoxCollider2D grabbingcollider;
         private BoxCollider2D ownercollider;
+        private int grabbingOldLayer;
+        private float grabbingOldGravityscale;
+
         private Vector2 prevForce = new Vector2(0f, 0f);
         public Boolean holding { get; set; }
         public Grab(GameObject owner, float range, float pull_power,float hlabysh_power)
@@ -42,6 +45,8 @@ namespace Assets.Scripts
         }
         public void Start(GameObject grabbingObject)
         {
+            grabbingOldGravityscale = grabbingObject.GetComponent<Rigidbody2D>().gravityScale;
+            grabbingOldLayer = grabbingObject.layer;
             crutch = true;
             grabbingObject.layer = 8;
                 holding = true;
@@ -143,7 +148,7 @@ namespace Assets.Scripts
                 }
                 else
                 {
-                    RaycastHit2D hit = Physics2D.Raycast(ownerBody.position,Util.AimDIr(), range * 2.5f);
+                    RaycastHit2D hit = Physics2D.Raycast(ownerBody.position,Util.AimDIr(), range * 2.5f, Util.LayerPhysObjectsOnly());
                     Debug.DrawRay(ownerBody.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - ownerBody.position, Color.red, 0.8f);
                     if (hit.collider != null)
                     {
@@ -170,10 +175,10 @@ namespace Assets.Scripts
                 tryingToUnhold = true;
                 if (IsGrabbingObjectInsideCharacter()) return;
             }
-            grabbingObject.layer = 0;
             holding = false;
-            grabbingbody.gravityScale = 1;
             prevForce.Set(0f, 0f);
+            grabbingObject.GetComponent<Rigidbody2D>().gravityScale = grabbingOldGravityscale;
+            grabbingObject.layer = grabbingOldLayer;
             Debug.Log("Not holding");
             tryingToUnhold = false;
         }
