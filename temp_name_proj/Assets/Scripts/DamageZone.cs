@@ -17,11 +17,11 @@ public class DamageZone : MonoBehaviour
     }
     void OnTriggerStay2D(Collider2D other)
     {
-        MainCharacter controller = other.GetComponent<MainCharacter>();
+        Damageable e = other.GetComponent<Damageable>();
 
-        if (controller != null)
+        if (e != null)
         {
-            controller.ChangeHealth(-5);
+            e.ChangeHealth(-5);
         }
     }
 }

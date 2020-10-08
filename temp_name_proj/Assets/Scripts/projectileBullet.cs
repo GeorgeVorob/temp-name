@@ -25,7 +25,7 @@ public class projectileBullet : MonoBehaviour
     }
     void OnCollisionEnter2D(Collision2D other)
     {
-        MainCharacter e = other.collider.GetComponent<MainCharacter>();
+        Damageable e = other.collider.GetComponent<Damageable>();
         if (e != null)
         {
             e.ChangeHealth(-10);

@@ -13,12 +13,6 @@ public class MainCharacter : MonoBehaviour
     float horizontal;// Переменная перемещения по оси х
     public float speed;// Переменная скорости перемещения
     public float force;
-    public float maxHP = 100f;
-    private float HP;
-    public float invictibleTime = 0.5f;
-
-    bool isInvincible;
-    float invincibleTimer;
 
     public float jump_delay = 0.05f;
     public bool grounded = false;// Переиенная состояния "на земле"
@@ -63,7 +57,6 @@ public class MainCharacter : MonoBehaviour
         grab.holdAvalible = grab_hold_avalible;
         grab.pullAvalible = grab_pull_avalible;
         grab.hlabyshAvalible = grab_hlabysh_avalible;
-        HP = maxHP;
     }
 
     // Update is called once per frame
@@ -113,12 +106,6 @@ public class MainCharacter : MonoBehaviour
             grab.Hlabysh();
         }
 
-        if (isInvincible)
-        {
-            invincibleTimer -= Time.deltaTime;
-            if (invincibleTimer < 0)
-                isInvincible = false;
-        }
     }
 
     void FixedUpdate()
@@ -232,24 +219,4 @@ public class MainCharacter : MonoBehaviour
         grounded = false;
         hangedOn = false;
     }
-
-    public void ChangeHealth(float value)
-    {
-        if (value < 0)
-        {
-            if (isInvincible)
-                return;
-
-            isInvincible = true;
-            invincibleTimer = invictibleTime;
-        }
-        HP = Mathf.Clamp(HP + value, 0, maxHP);
-
-        Debug.Log("HP:" + HP);
-        if (HP <= 0)
-        {
-            Util.GameOver();
-        }
-    }
-
 }
