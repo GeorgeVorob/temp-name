@@ -18,8 +18,8 @@ TagManager:
   - player
   - collide all exept enemies
   - StaticPhysicalObjects
-  - 
-  - 
+  - Platform
+  - Ignore platforms
   - 
   - 
   - 

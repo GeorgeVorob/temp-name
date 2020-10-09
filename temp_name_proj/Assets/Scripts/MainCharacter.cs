@@ -10,7 +10,8 @@ using UnityEngine.UIElements;
 public class MainCharacter : MonoBehaviour
 {
     public static Rigidbody2D body;
-    float horizontal;// Переменная перемещения по оси х
+    float horizontal = 0;// Переменная перемещения по оси х
+    float vertical = 0;
     public float speed;// Переменная скорости перемещения
     public float force;
 
@@ -62,6 +63,28 @@ public class MainCharacter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetButton("Vertical"))
+        {
+            if (Input.GetButton("Jump"))
+            {
+                gameObject.layer = 14;
+            }
+        }
+        else
+        {
+            if (Input.GetButtonDown("Jump") && grounded && !is_jumped)
+            {
+                set_free();
+                body.AddForce(new Vector2(0f, force));
+                is_jumped = true;
+            }
+        }
+
+        if (Input.GetButtonUp("Vertical") || Input.GetButtonUp("Jump"))
+        {
+            gameObject.layer = 10;
+        }
+
         if (is_jumped)
         {
             jump_delay_timer -= Time.deltaTime;
@@ -72,22 +95,11 @@ public class MainCharacter : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("Jump") && grounded && !is_jumped)
-        {
-            set_free();
-            body.AddForce(new Vector2(0f, force));
-            is_jumped = true;
-        }
-
         if (hangedOn)
         {
-            if (Input.GetAxis("Vertical") != 0)
+            if (vertical < 0)
             {
-                float vertical = Input.GetAxis("Vertical");
-                if (vertical < 0)
-                {
-                    set_free();
-                }
+                set_free();
             }
         }
 
@@ -105,14 +117,13 @@ public class MainCharacter : MonoBehaviour
         {
             grab.Hlabysh();
         }
-
     }
 
     void FixedUpdate()
     {
         if (Input.GetMouseButton(1)) //Этот метод вызывается каждый кадр, если зажата ПКМ, не путать с Input.GetMouseButtonDown
         {
-            RaycastHit2D hit = Physics2D.Raycast(body.position, Util.AimDIr(), 1000f,Util.LayerPhysObjectsOnly());
+            RaycastHit2D hit = Physics2D.Raycast(body.position, Util.AimDIr(), 1000f, Util.LayerPhysObjectsOnly());
             Debug.DrawRay(body.position, Util.AimDIr()); //DrawRay не умеет в длину луча, действительный луч имеет длину в 1000f
 
             if (hit.collider != null)
@@ -123,10 +134,6 @@ public class MainCharacter : MonoBehaviour
                     {
                         grab.Pull(hit.collider.gameObject);
                     }
-                    else
-                    {
-                        //grab.PullReverse(hit.point);
-                    }
                 }
             }
         }
@@ -136,6 +143,7 @@ public class MainCharacter : MonoBehaviour
         }
 
         horizontal = Input.GetAxis("Horizontal");
+        vertical = Input.GetAxis("Vertical");
         if (!hangedOn)
             body.velocity = new Vector2(horizontal * speed, body.velocity.y);
         if (telekines.working)
@@ -145,10 +153,10 @@ public class MainCharacter : MonoBehaviour
 
     }
 
+
     private void OnCollisionStay2D(Collision2D collision)
     {
         Vector2 Bottom_checker = collision.collider.ClosestPoint((Vector2)this.transform.position + (bottom_middle_point) + new Vector2(0, 0.1f));
-        //Debug.Log((Vector2)this.transform.position + (bottom_middle_point) + "///" + Bottom_checker);
         if ((Bottom_checker.y < ((Vector2)transform.position + bottom_middle_point).y) && !is_jumped) grounded = true;
 
         if (horizontal != 0)
@@ -158,7 +166,7 @@ public class MainCharacter : MonoBehaviour
             Climp(horizontal, central_checker);
             HangOn(horizontal, top_checker, collision);
         }
-        if (hang_object != null && collision.collider==hang_object)
+        if (hang_object != null && collision.collider == hang_object)
         {
             if (buf) buf1 = true;
         }
@@ -166,11 +174,10 @@ public class MainCharacter : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        //Debug.Log(bottom_middle_point);
-        if (collision.collider == hang_object && (!buf||!buf1))
+        if (collision.collider == hang_object && (!buf || !buf1))
         {
-             set_free();
-             hang_object = null;
+            set_free();
+            hang_object = null;
         }
         if (buf) buf = false;
     }
@@ -202,7 +209,7 @@ public class MainCharacter : MonoBehaviour
             Debug.Log(top_checker.x + "/*/" + (top_middle_point + (Vector2)this.transform.position).x);
             grounded = true;
             hangedOn = true;
-            Vector2 cornerTop = new Vector2(0.5f * horizontal, 1f)*transform.localScale;
+            Vector2 cornerTop = new Vector2(0.5f * horizontal, 1f) * transform.localScale;
             top_checker.x = (float)Math.Round(top_checker.x, 1);
             top_checker.y = (float)Math.Round(top_checker.y, 1);
             body.position = top_checker - cornerTop;
