@@ -34,7 +34,7 @@ namespace Assets.Scripts
 
         private Vector2 prevForce = new Vector2(0f, 0f);
         public Boolean holding { get; set; }
-        public Grab(GameObject owner, float range, float pull_power,float hlabysh_power)
+        public Grab(GameObject owner, float range, float pull_power, float hlabysh_power)
         {
             this.owner = owner;
             this.ownerBody = owner.GetComponent<Rigidbody2D>();
@@ -49,8 +49,8 @@ namespace Assets.Scripts
             grabbingOldLayer = grabbingObject.layer;
             crutch = true;
             grabbingObject.layer = 8;
-                holding = true;
-                this.grabbingbody = grabbingObject.GetComponent<Rigidbody2D>();
+            holding = true;
+            this.grabbingbody = grabbingObject.GetComponent<Rigidbody2D>();
             this.grabbingObject = grabbingObject;
             grabbingcollider = grabbingObject.GetComponent<BoxCollider2D>();
             grabbingbody.gravityScale = 0;
@@ -71,7 +71,7 @@ namespace Assets.Scripts
             if ((hit.collider != null && hit.collider.name == "Tilemap") || (Dir.magnitude > range * 3))
             {
                 this.Stop();
-                 return;
+                return;
             }
 
             //Collider2D[] bodyCollider = new Collider2D[1];
@@ -86,9 +86,9 @@ namespace Assets.Scripts
             //}
             //Debug.Log($"DIFFERENCE:{owner.transform.position.y + 1.0f - (grabbingObject.transform.position.y + grabbingcollider.size.y / 2.0f + ownercollider.size.y / 2.0f)}");
 
-            hit = Physics2D.Raycast(grabbingbody.position,Dir,1000f,~2);
+            hit = Physics2D.Raycast(grabbingbody.position, Dir, 1000f, ~2);
 
-            if(hit.collider!=null && (Math.Abs(Dir.x) >= ownercollider.size.x + grabbingcollider.size.x || Math.Abs(Dir.y) >= ownercollider.size.y + grabbingcollider.size.y || Dir.magnitude >= range))
+            if (hit.collider != null && (Math.Abs(Dir.x) >= ownercollider.size.x + grabbingcollider.size.x || Math.Abs(Dir.y) >= ownercollider.size.y + grabbingcollider.size.y || Dir.magnitude >= range))
             {
                 grabbingObject.layer = 8;
             }
@@ -99,8 +99,8 @@ namespace Assets.Scripts
             Vector2 force = (Dir.normalized * 30000f * Dir.magnitude) - prevForce * 0.92f;
             prevForce = Dir.normalized * 30000f * Dir.magnitude;
             grabbingbody.AddForce(force);
-            Debug.DrawRay(grabbingbody.position,Dir,Color.cyan);
-            if(tryingToGetOut)
+            Debug.DrawRay(grabbingbody.position, Dir, Color.cyan);
+            if (tryingToGetOut)
             {
                 if (!IsGrabbingObjectInsideCharacter()) grabbingObject.layer = 0;
                 tryingToGetOut = false;
@@ -116,15 +116,15 @@ namespace Assets.Scripts
             {
                 Rigidbody2D body = grabbingObject.GetComponent<Rigidbody2D>();
                 Vector2 dir = ownerBody.position - body.position;
-                Debug.DrawLine(ownerBody.position, body.position,Color.green);
+                Debug.DrawLine(ownerBody.position, body.position, Color.green);
                 dir.y += 1f;
                 //Debug.Log($"magnitude: {{dir.magnitude}}");
                 if (dir.magnitude <= range * 1.5 && holdAvalible) //ЕСЛИ ПЕРСОНАЖ ДВИГАЕТ САМ СЕБЯ И PULL НЕ ПЕРЕХОДИТ В HOLD ТО ЭТО ИЗ-ЗА ЭТОГО
                 {
                     this.grabbingbody = body;
-                   // body.isKinematic = true;
+                    // body.isKinematic = true;
                     body.velocity = Vector2.zero;  //Возможно неадекватное поведение физики из-за body.isKinematic?
-                  //  body.isKinematic = false;
+                                                   //  body.isKinematic = false;
                     this.Start(grabbingObject);
                     Debug.Log("Holding");
                     return;
@@ -145,26 +145,20 @@ namespace Assets.Scripts
                     if (IsGrabbingObjectInsideCharacter()) return;
                     throwingbody = this.grabbingbody;
                     pullOnCoolDown = true;
+                    Vector2 dir = throwingbody.position - ownerBody.position;
+                    throwingbody.AddForce(dir * hlabyshPower, ForceMode2D.Impulse);
+                    this.Stop(true);
                 }
                 else
                 {
-                    RaycastHit2D hit = Physics2D.Raycast(ownerBody.position,Util.AimDIr(), range * 2.5f, Util.LayerPhysObjectsOnly());
-                    Debug.DrawRay(ownerBody.position, (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition) - ownerBody.position, Color.red, 0.8f);
-                    if (hit.collider != null)
-                    {
-                        throwingbody = hit.collider.gameObject.GetComponent<Rigidbody2D>();
-                    }
-                    else return;
-                }
-                Vector2 dir = throwingbody.position - ownerBody.position;
-                if (dir.magnitude <= range * 2)
-                {
-                    holding = false;
-                    throwingbody.AddForce(dir * hlabyshPower, ForceMode2D.Impulse);
-                    if (throwingbody == this.grabbingbody)
-                    {
-                        this.Stop(true);
-                    }
+                    PolygonCollider2D cone = new PolygonCollider2D();
+                    Vector2[] conePath = new Vector2[3];
+                    conePath[0] = MainCharacter.body.position;
+                    Vector2 buf = Util.AimDIr();
+                    //buf.
+                    //conePath[1] = (Util.AimDIr().magnitude * range);
+
+                    cone.SetPath(0, conePath);
                 }
             }
         }
