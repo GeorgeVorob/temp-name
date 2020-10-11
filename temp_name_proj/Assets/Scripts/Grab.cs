@@ -31,6 +31,7 @@ namespace Assets.Scripts
         private BoxCollider2D ownercollider;
         private int grabbingOldLayer;
         private float grabbingOldGravityscale;
+        private PolygonCollider2D cone;
 
         private Vector2 prevForce = new Vector2(0f, 0f);
         public Boolean holding { get; set; }
@@ -42,6 +43,8 @@ namespace Assets.Scripts
             this.range = range;
             pullPower = pull_power;
             hlabyshPower = hlabysh_power;
+            cone = owner.AddComponent<PolygonCollider2D>(); //TODO: сомнительное решение, решить что с этим делать после собрания 11.10.20
+            cone.isTrigger = true;
         }
         public void Start(GameObject grabbingObject)
         {
@@ -151,14 +154,29 @@ namespace Assets.Scripts
                 }
                 else
                 {
-                    PolygonCollider2D cone = new PolygonCollider2D();
                     Vector2[] conePath = new Vector2[3];
-                    conePath[0] = MainCharacter.body.position;
-                    Vector2 buf = Util.AimDIr();
-                    //buf.
-                    //conePath[1] = (Util.AimDIr().magnitude * range);
+                    conePath[0] = new Vector2(0,0);
 
+                    Vector2 buf = Util.AimDIr() * range * 2.5f;
+                    buf = Quaternion.Euler(0, 0, 20) * buf;
+                    //buf += MainCharacter.body.position;
+                    conePath[1] = buf;
+
+                    buf = Util.AimDIr() * range * 2.5f;
+                    buf = Quaternion.Euler(0, 0, -20) * buf;
+                    //buf += MainCharacter.body.position;
+                    conePath[2] = buf;
                     cone.SetPath(0, conePath);
+                    ContactFilter2D filter = new ContactFilter2D();
+                    filter.SetLayerMask(Util.LayerPhysObjectsOnly());
+                    Collider2D[] results = new Collider2D[50];
+                    cone.OverlapCollider(filter, results);
+                    foreach(Collider2D throwingCollider in results)
+                    {
+                        Rigidbody2D throwingBody = throwingCollider.GetComponent<Rigidbody2D>();
+                        Vector2 dir = throwingBody.position - ownerBody.position;
+                        throwingBody.AddForce(dir * hlabyshPower, ForceMode2D.Impulse);
+                    }
                 }
             }
         }
