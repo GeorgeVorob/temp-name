@@ -130,10 +130,9 @@ public class MainCharacter : MonoBehaviour
             {
                 if (!grab.holding)
                 {
-                    if (hit.collider.name != "Tilemap")
-                    {
+
                         grab.Pull(hit.collider.gameObject);
-                    }
+                    
                 }
             }
         }

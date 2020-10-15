@@ -169,7 +169,7 @@ namespace Assets.Scripts
                     cone.SetPath(0, conePath);
                     ContactFilter2D filter = new ContactFilter2D();
                     filter.SetLayerMask(Util.LayerPhysObjectsOnly());
-                    Collider2D[] results = new Collider2D[50];
+                    List<Collider2D> results = new List<Collider2D>();
                     cone.OverlapCollider(filter, results);
                     foreach(Collider2D throwingCollider in results)
                     {
@@ -177,6 +177,7 @@ namespace Assets.Scripts
                         Vector2 dir = throwingBody.position - ownerBody.position;
                         throwingBody.AddForce(dir * hlabyshPower, ForceMode2D.Impulse);
                     }
+                    
                 }
             }
         }
