@@ -143,9 +143,11 @@ public class MainCharacter : MonoBehaviour
 
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
-        if (horizontal != 0 && body.velocity.y < 0)
+        if (horizontal != 0)
         {
-            hangOn(horizontal);
+            climp(horizontal);
+            if (body.velocity.y < 0)
+                hangOn(horizontal);
         }
         if (!hangedOn)
             body.velocity = new Vector2(horizontal * speed, body.velocity.y);
@@ -188,17 +190,18 @@ public class MainCharacter : MonoBehaviour
         grounded = false;*/
     }
 
-    private void Climp(float horizontal, Vector2 central_checker)
+    private void climp(float horizontal)
     {
         horizontal = Math.Sign(horizontal);
-        if (central_checker.y > (bottom_middle_point + (Vector2)this.transform.position).y
-            && central_checker.y < (step_middle_point + (Vector2)this.transform.position).y
-            && Math.Sign(central_checker.x - body.position.x) == horizontal)
+        RaycastHit2D low_climp_hit = Physics2D.Raycast((Vector2)transform.position + new Vector2(horizontal * 0.5f, -1f) * transform.localScale, new Vector2(horizontal, 0), 0.15f, 1);
+        if (low_climp_hit)
         {
-            Debug.Log(body.position.x + " // " + central_checker.x);
-            body.position = central_checker + new Vector2(horizontal * -0.5f, 1f);
-            Debug.Log(body.position.x + "//");
-            body.velocity = new Vector2(body.velocity.x, 0);
+            Vector2 top_climp_point = (Vector2)transform.position + new Vector2(horizontal * 0.5f, -0.75f) * transform.localScale;
+            RaycastHit2D top_climp_hit = Physics2D.Raycast(top_climp_point, new Vector2(horizontal, 0), 0.15f, 1);
+            if (!top_climp_hit)
+            {
+                body.position = low_climp_hit.collider.ClosestPoint(top_climp_point) + new Vector2(-horizontal * 0.5f, 1f) * transform.localScale;
+            }
         }
     }
 
@@ -207,7 +210,7 @@ public class MainCharacter : MonoBehaviour
         horizontal = Math.Sign(horizontal);
 
         RaycastHit2D low_hang_hit = Physics2D.Raycast((Vector2)transform.position + new Vector2(horizontal * 0.5f, 0.7f) * transform.localScale, new Vector2(horizontal, 0), 0.15f, 1);
-        if (low_hang_hit == true)
+        if (low_hang_hit)
         {
             Vector2 top_point = (Vector2)transform.position + new Vector2(horizontal * 0.5f, 1f) * transform.localScale;
             RaycastHit2D high_hang_hit = Physics2D.Raycast(top_point, new Vector2(horizontal, 0), 0.15f, 1);

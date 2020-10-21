@@ -3207,6 +3207,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1639635701704615986, guid: f1de7d4b08f288840bbfa0a71314d73a, type: 3}
+      propertyPath: visionRadius
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 1639635701704615987, guid: f1de7d4b08f288840bbfa0a71314d73a, type: 3}
       propertyPath: m_Name
       value: enemyBasic
