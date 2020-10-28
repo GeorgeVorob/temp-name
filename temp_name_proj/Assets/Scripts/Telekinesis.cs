@@ -22,7 +22,7 @@ namespace Assets.Scripts
         }
         public void Start(GameObject grabbongObject)
         {
-            if (grabbongObject.name!="MainCharacter")
+            if (grabbongObject.name != "MainCharacter")
             {
                 working = true;
                 this.body = grabbongObject.GetComponent<Rigidbody2D>();

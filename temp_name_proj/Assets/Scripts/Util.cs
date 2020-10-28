@@ -12,7 +12,7 @@ namespace Assets.Scripts
     {
         public static Vector2 AimDIr()
         {
-            if(false) //TODO: Если от стика, отвечающего за аим, инпут не равен нулю
+            if (false) //TODO: Если от стика, отвечающего за аим, инпут не равен нулю
             {
                 //Сварить из этого нормализованный вектор и вернуть
             }
@@ -26,7 +26,7 @@ namespace Assets.Scripts
             SceneManager.LoadScene(SceneManager.GetActiveScene().name); //Перезагрузка сцены
         }
         public static LayerMask LayerPhysObjectsOnly() //Если проблемы со слоями нормально не решатся и у нас 
-            //физ. объекты для притягивания будут на больше чем одном слою, то дописать их сюда в маску
+                                                       //физ. объекты для притягивания будут на больше чем одном слою, то дописать их сюда в маску
         {
             return LayerMask.GetMask("Default");
         }

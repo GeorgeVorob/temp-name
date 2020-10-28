@@ -172,14 +172,14 @@ public class MainCharacter : MonoBehaviour
     {
         Vector2 Bottom_checker = collision.collider.ClosestPoint((Vector2)this.transform.position + (bottom_middle_point) + new Vector2(0, 0.1f));
         if ((Bottom_checker.y < ((Vector2)transform.position + bottom_middle_point).y) && !is_jumped) grounded = true;
-        if (collision.collider == hang_object&& !wall) wall = true;
+        if (collision.collider == hang_object && !wall) wall = true;
 
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         Debug.Log(collision.collider + "//" + hang_object);
-        if(collision.collider == hang_object)
+        if (collision.collider == hang_object)
         {
             if (wall)
             {

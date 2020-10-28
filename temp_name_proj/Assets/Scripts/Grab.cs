@@ -125,9 +125,7 @@ namespace Assets.Scripts
                 if (dir.magnitude <= range * 1.5 && holdAvalible) //ЕСЛИ ПЕРСОНАЖ ДВИГАЕТ САМ СЕБЯ И PULL НЕ ПЕРЕХОДИТ В HOLD ТО ЭТО ИЗ-ЗА ЭТОГО
                 {
                     this.grabbingbody = body;
-                    // body.isKinematic = true;
-                    body.velocity = Vector2.zero;  //Возможно неадекватное поведение физики из-за body.isKinematic?
-                                                   //  body.isKinematic = false;
+                    body.velocity = Vector2.zero;
                     this.Start(grabbingObject);
                     Debug.Log("Holding");
                     return;
@@ -155,7 +153,7 @@ namespace Assets.Scripts
                 else
                 {
                     Vector2[] conePath = new Vector2[3];
-                    conePath[0] = new Vector2(0,0);
+                    conePath[0] = new Vector2(0, 0);
 
                     Vector2 buf = Util.AimDIr() * range * 2.5f;
                     buf = Quaternion.Euler(0, 0, 20) * buf;
@@ -171,13 +169,13 @@ namespace Assets.Scripts
                     filter.SetLayerMask(Util.LayerPhysObjectsOnly());
                     List<Collider2D> results = new List<Collider2D>();
                     cone.OverlapCollider(filter, results);
-                    foreach(Collider2D throwingCollider in results)
+                    foreach (Collider2D throwingCollider in results)
                     {
                         Rigidbody2D throwingBody = throwingCollider.GetComponent<Rigidbody2D>();
                         Vector2 dir = throwingBody.position - ownerBody.position;
                         throwingBody.AddForce(dir * hlabyshPower, ForceMode2D.Impulse);
                     }
-                    
+
                 }
             }
         }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class projectileBullet : MonoBehaviour
 {
-    Rigidbody2D bulletBody ;
+    Rigidbody2D bulletBody;
     // Start is called before the first frame update
     void Awake()
     {

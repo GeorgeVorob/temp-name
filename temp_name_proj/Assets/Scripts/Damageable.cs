@@ -45,7 +45,7 @@ public class Damageable : MonoBehaviour
             if (gameObject.name == "MainCharacter")
                 Util.GameOver();
             else
-            Destroy(gameObject);
+                Destroy(gameObject);
         }
     }
 

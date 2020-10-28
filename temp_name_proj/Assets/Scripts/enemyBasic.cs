@@ -18,12 +18,12 @@ public class enemyBasic : MonoBehaviour
     public float burstInterval = 0.2f;
     public int scatterDegree = 6;
     private float CurrentburstInterval = 0.0f;
-    private int CurrentshootBurstAmount=0;
+    private int CurrentshootBurstAmount = 0;
     private bool shootAvalible = true;
     //private CircleCollider2D visionCollider;
 
     Rigidbody2D body;
-    enum Status {idle, approaching, Battle, Shoot}
+    enum Status { idle, approaching, Battle, Shoot }
     Status status = Status.idle;
 
     public GameObject projectilePrefab;
@@ -37,7 +37,7 @@ public class enemyBasic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        switch(status)
+        switch (status)
         {
             case Status.idle:
                 statusIdle();
@@ -57,7 +57,7 @@ public class enemyBasic : MonoBehaviour
             status = Status.Shoot;
             return;
         }
-            
+
         CurrentshootCoolDownTime -= Time.deltaTime;
         if (CurrentshootCoolDownTime <= 0)
         {
@@ -90,7 +90,7 @@ public class enemyBasic : MonoBehaviour
             projectileObject.layer = 11;
             projectileBullet projectile = projectileObject.GetComponent<projectileBullet>();
             Vector2 launchdir = (MainCharacter.body.position - body.position).normalized;
-            launchdir = Quaternion.Euler(0, 0, random.Next(scatterDegree*-1, scatterDegree)) * launchdir;
+            launchdir = Quaternion.Euler(0, 0, random.Next(scatterDegree * -1, scatterDegree)) * launchdir;
             projectile.Launch(launchdir);
             CurrentshootBurstAmount--;
             CurrentburstInterval = burstInterval;
