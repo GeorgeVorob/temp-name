@@ -27,8 +27,7 @@ public class MainCharacter : MonoBehaviour
     private Vector2 step_middle_point;
     private Vector2 hang_middle_point;
 
-    private bool buf = false;
-    private bool buf1 = false;
+    //private int hangOn_direction = 0;
 
     private Collider2D hang_object;
 
@@ -101,6 +100,14 @@ public class MainCharacter : MonoBehaviour
             {
                 set_free();
             }
+            /*RaycastHit2D high_hang_hit;
+            Debug.Log(((Vector2)transform.position + new Vector2(0.5f, 0.9f) * transform.localScale).x);
+            if (hangOn_direction==1)
+            high_hang_hit = Physics2D.Raycast((Vector2)transform.position + new Vector2(0.5f, 0.9f) * transform.localScale, new Vector2(1, 0), 0.9f, 1);
+            else
+            high_hang_hit = Physics2D.Raycast((Vector2)transform.position + new Vector2(-0.5f, 0.9f) * transform.localScale, new Vector2(-1, 0), 0.1f, 1);
+            if (!high_hang_hit) set_free();*/
+
         }
 
         if (Input.GetMouseButtonUp(1))
@@ -131,8 +138,8 @@ public class MainCharacter : MonoBehaviour
                 if (!grab.holding)
                 {
 
-                        grab.Pull(hit.collider.gameObject);
-                    
+                    grab.Pull(hit.collider.gameObject);
+
                 }
             }
         }
@@ -143,14 +150,15 @@ public class MainCharacter : MonoBehaviour
 
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
+
         if (horizontal != 0)
         {
             climp(horizontal);
             if (body.velocity.y < 0)
                 hangOn(horizontal);
         }
-        if (!hangedOn)
-            body.velocity = new Vector2(horizontal * speed, body.velocity.y);
+
+        if (!hangedOn) body.velocity = new Vector2(horizontal * speed, body.velocity.y);
 
         if (telekines.working)
         {
@@ -164,30 +172,23 @@ public class MainCharacter : MonoBehaviour
     {
         Vector2 Bottom_checker = collision.collider.ClosestPoint((Vector2)this.transform.position + (bottom_middle_point) + new Vector2(0, 0.1f));
         if ((Bottom_checker.y < ((Vector2)transform.position + bottom_middle_point).y) && !is_jumped) grounded = true;
-        /*
-        if (horizontal != 0)
-        {
-            Vector2 central_checker = collision.collider.ClosestPoint(transform.position);
-            Vector2 top_checker = collision.collider.ClosestPoint((Vector2)transform.position + top_middle_point);
-            Climp(horizontal, central_checker);
-            HangOn(horizontal, top_checker, collision);
-        }*/
+        if (collision.collider == hang_object&& !wall) wall = true;
 
-        /*if (hang_object != null && collision.collider == hang_object)
-        {
-            if (buf) buf1 = true;
-        }*/
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        /*if (collision.collider == hang_object && (!buf || !buf1))
+        Debug.Log(collision.collider + "//" + hang_object);
+        if(collision.collider == hang_object)
         {
-            set_free();
-            hang_object = null;
+            if (wall)
+            {
+                set_free();
+                hang_object = null;
+                wall = false;
+            }
+            else wall = true;
         }
-        if (buf) buf = false;
-        grounded = false;*/
     }
 
     private void climp(float horizontal)
@@ -214,19 +215,18 @@ public class MainCharacter : MonoBehaviour
         {
             Vector2 top_point = (Vector2)transform.position + new Vector2(horizontal * 0.5f, 1f) * transform.localScale;
             RaycastHit2D high_hang_hit = Physics2D.Raycast(top_point, new Vector2(horizontal, 0), 0.15f, 1);
-            if(!high_hang_hit)
+            if (!high_hang_hit)
             {
-                Vector2 top_checker=low_hang_hit.collider.ClosestPoint((Vector2)transform.position + top_middle_point);
+                Vector2 top_checker = low_hang_hit.collider.ClosestPoint((Vector2)transform.position + top_middle_point);
                 Vector2 cornerTop = new Vector2(0.5f * horizontal, 1f) * transform.localScale;
                 top_checker.x = (float)Math.Round(top_checker.x, 1);
                 top_checker.y = (float)Math.Round(top_checker.y, 1);
                 body.position = top_checker - cornerTop;
                 body.isKinematic = true;
                 body.velocity = new Vector2(0, 0);
-                hang_object = low_hang_hit.collider;
                 grounded = true;
                 hangedOn = true;
-                buf = true;
+                hang_object = low_hang_hit.collider;
             }
         }
     }
