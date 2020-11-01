@@ -30,5 +30,9 @@ namespace Assets.Scripts
         {
             return LayerMask.GetMask("Default");
         }
+        public static LayerMask LayerMaterialObjectsOnly()
+        {
+            return LayerMask.GetMask("Default", "StaticPhysicalObjects", "Platform");
+        }
     }
 }

@@ -210,11 +210,11 @@ public class MainCharacter : MonoBehaviour
     {
         horizontal = Math.Sign(horizontal);
 
-        RaycastHit2D low_hang_hit = Physics2D.Raycast((Vector2)transform.position + new Vector2(horizontal * 0.5f, 0.7f) * transform.localScale, new Vector2(horizontal, 0), 0.15f, 1);
+        RaycastHit2D low_hang_hit = Physics2D.Raycast((Vector2)transform.position + new Vector2(horizontal * 0.5f, 0.7f) * transform.localScale, new Vector2(horizontal, 0), 0.15f, Util.LayerMaterialObjectsOnly());
         if (low_hang_hit)
         {
             Vector2 top_point = (Vector2)transform.position + new Vector2(horizontal * 0.5f, 1f) * transform.localScale;
-            RaycastHit2D high_hang_hit = Physics2D.Raycast(top_point, new Vector2(horizontal, 0), 0.15f, 1);
+            RaycastHit2D high_hang_hit = Physics2D.Raycast(top_point, new Vector2(horizontal, 0), 0.15f, Util.LayerMaterialObjectsOnly());
             if (!high_hang_hit)
             {
                 Vector2 top_checker = low_hang_hit.collider.ClosestPoint((Vector2)transform.position + top_middle_point);
