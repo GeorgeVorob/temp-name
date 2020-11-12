@@ -49,6 +49,7 @@ public static class CMUtilsClass
         textMesh.alignment = textAlignment;
         textMesh.text = text;
         textMesh.fontSize = fontSize;
+        textMesh.characterSize = 0.006f; //Изменено Goga, по-хорошему не должно быть захардкожено
         textMesh.color = color;
         textMesh.GetComponent<MeshRenderer>().sortingOrder = sortingOrder;
         return textMesh;
