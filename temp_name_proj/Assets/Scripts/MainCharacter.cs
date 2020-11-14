@@ -12,7 +12,10 @@ public class MainCharacter : MonoBehaviour
     public static Rigidbody2D body;
     float horizontal = 0;// Переменная перемещения по оси х
     float vertical = 0;
-    public float speed;// Переменная скорости перемещения
+    float speed;
+    public float defualt_speed;
+    public float sprint_speed;
+    public float walk_speed;// Переменная скорости перемещения
     public float force;
 
     public float jump_delay = 0.05f;
@@ -24,10 +27,6 @@ public class MainCharacter : MonoBehaviour
     private float jump_delay_timer;
     private Vector2 bottom_middle_point;
     private Vector2 top_middle_point;
-    private Vector2 step_middle_point;
-    private Vector2 hang_middle_point;
-
-    //private int hangOn_direction = 0;
 
     private Collider2D hang_object;
 
@@ -49,8 +48,8 @@ public class MainCharacter : MonoBehaviour
         jump_delay_timer = jump_delay;
         bottom_middle_point = transform.localScale * new Vector2(0, -1f);
         top_middle_point = transform.localScale * new Vector2(0, 1f);
-        step_middle_point = transform.localScale * new Vector2(0, -0.75f);
-        hang_middle_point = transform.localScale * new Vector2(0, 0.8f);
+
+        speed = defualt_speed;
 
         telekines.avalible = true;
         grab = new Grab(this.gameObject, grab_range, grab_pull_power, grab_hlabysh_power);
@@ -94,19 +93,32 @@ public class MainCharacter : MonoBehaviour
             }
         }
 
+        if (Input.GetButton("Sprint") && grounded)
+        {
+            speed = sprint_speed;
+        }
+
+        if (Input.GetButtonUp("Sprint") && grounded)
+        {
+            speed = defualt_speed;
+        }
+
+        if (Input.GetButton("Walk") && grounded)
+        {
+            speed = walk_speed;
+        }
+
+        if (Input.GetButtonUp("Walk") && grounded)
+        {
+            speed = defualt_speed;
+        }
+
         if (hangedOn)
         {
             if (vertical < 0)
             {
                 set_free();
             }
-            /*RaycastHit2D high_hang_hit;
-            Debug.Log(((Vector2)transform.position + new Vector2(0.5f, 0.9f) * transform.localScale).x);
-            if (hangOn_direction==1)
-            high_hang_hit = Physics2D.Raycast((Vector2)transform.position + new Vector2(0.5f, 0.9f) * transform.localScale, new Vector2(1, 0), 0.9f, 1);
-            else
-            high_hang_hit = Physics2D.Raycast((Vector2)transform.position + new Vector2(-0.5f, 0.9f) * transform.localScale, new Vector2(-1, 0), 0.1f, 1);
-            if (!high_hang_hit) set_free();*/
 
         }
 
@@ -171,7 +183,11 @@ public class MainCharacter : MonoBehaviour
     private void OnCollisionStay2D(Collision2D collision)
     {
         Vector2 Bottom_checker = collision.collider.ClosestPoint((Vector2)this.transform.position + (bottom_middle_point) + new Vector2(0, 0.1f));
-        if ((Bottom_checker.y < ((Vector2)transform.position + bottom_middle_point).y) && !is_jumped) grounded = true;
+        if ((Bottom_checker.y < ((Vector2)transform.position + bottom_middle_point).y) && !is_jumped)
+        {
+            grounded = true;
+            if (!Input.GetButton("Sprint") || !Input.GetButtonUp("Walk")) speed = defualt_speed;
+        }
         if (collision.collider == hang_object && !wall) wall = true;
 
     }
@@ -194,11 +210,11 @@ public class MainCharacter : MonoBehaviour
     private void climp(float horizontal)
     {
         horizontal = Math.Sign(horizontal);
-        RaycastHit2D low_climp_hit = Physics2D.Raycast((Vector2)transform.position + new Vector2(horizontal * 0.5f, -1f) * transform.localScale, new Vector2(horizontal, 0), 0.15f, 1);
+        RaycastHit2D low_climp_hit = Physics2D.Raycast((Vector2)transform.position + new Vector2(horizontal * 0.5f, -1f) * transform.localScale, new Vector2(horizontal, 0), 0.05f, 1);
         if (low_climp_hit)
         {
             Vector2 top_climp_point = (Vector2)transform.position + new Vector2(horizontal * 0.5f, -0.75f) * transform.localScale;
-            RaycastHit2D top_climp_hit = Physics2D.Raycast(top_climp_point, new Vector2(horizontal, 0), 0.15f, 1);
+            RaycastHit2D top_climp_hit = Physics2D.Raycast(top_climp_point, new Vector2(horizontal, 0), 0.05f, 1);
             if (!top_climp_hit)
             {
                 body.position = low_climp_hit.collider.ClosestPoint(top_climp_point) + new Vector2(-horizontal * 0.5f, 1f) * transform.localScale;

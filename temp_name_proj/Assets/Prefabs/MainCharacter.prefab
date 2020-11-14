@@ -144,10 +144,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c69da97a9b9f5b74b9cc1ce4b9f9a8d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
-  force: 25000
-  maxHP: 100
-  invictibleTime: 0.5
+  defualt_speed: 5
+  sprint_speed: 7
+  walk_speed: 2
+  force: 35000
   jump_delay: 0.5
   grounded: 0
   hangedOn: 0

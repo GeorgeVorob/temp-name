@@ -316,7 +316,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5054136909884999296}
   - component: {fileID: 5232646644361451106}
-  m_Layer: 31
+  m_Layer: 0
   m_Name: New Palette
   m_TagString: Untagged
   m_Icon: {fileID: 0}
