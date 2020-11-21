@@ -43,7 +43,7 @@ namespace Assets.Scripts
             this.range = range;
             pullPower = pull_power;
             hlabyshPower = hlabysh_power;
-            cone = owner.AddComponent<PolygonCollider2D>(); //TODO: сомнительное решение, решить что с этим делать после собрания 11.10.20
+            cone = owner.AddComponent<PolygonCollider2D>();
             cone.isTrigger = true;
         }
         public void Start(GameObject grabbingObject)
@@ -63,31 +63,13 @@ namespace Assets.Scripts
             Vector2 point = Util.AimDIr() * range;
             Dir = (Vector2)ownerBody.transform.position + point - (Vector2)grabbingbody.transform.position;
             Vector2 owner_body = grabbingbody.position - ownerBody.position;
-            RaycastHit2D hit = Physics2D.Raycast(ownerBody.position, owner_body, owner_body.magnitude);
-
-            //Debug.Log(hit.collider);
-            //if (hit.collider != null && hit.collider.name == "Tilemap")
-            //    Debug.Log("tilemap reason");
-            //if (Dir.magnitude > range * 2.2)
-            //    Debug.Log("range reason");
-
-            if ((hit.collider != null && hit.collider.name == "Tilemap") || (Dir.magnitude > range * 3))
+            RaycastHit2D hit = Physics2D.Raycast(ownerBody.position, owner_body, owner_body.magnitude, Util.LayerStaticPhysObjectsOnly());
+            //Debug.DrawRay(ownerBody.position, owner_body);
+            if ((hit.collider != null && Util.IsInLayerMask(hit.collider.gameObject.layer,Util.LayerStaticPhysObjectsOnly())) || (Dir.magnitude > range * 3))
             {
                 this.Stop();
                 return;
             }
-
-            //Collider2D[] bodyCollider = new Collider2D[1];
-            //grabbingbody.GetAttachedColliders(bodyCollider);
-            //if ((owner.transform.position.y + 0.1f >= grabbingObject.transform.position.y + grabbingcollider.size.y / 2.0f + ownercollider.size.y / 2.0f) && (Dir.y <= 0.0f))
-            //{
-            //    grabbingObject.layer = 0;
-            //}
-            //else
-            //{
-            //    grabbingObject.layer = 8;
-            //}
-            //Debug.Log($"DIFFERENCE:{owner.transform.position.y + 1.0f - (grabbingObject.transform.position.y + grabbingcollider.size.y / 2.0f + ownercollider.size.y / 2.0f)}");
 
             hit = Physics2D.Raycast(grabbingbody.position, Dir, 1000f, ~2);
 
@@ -173,6 +155,7 @@ namespace Assets.Scripts
                     {
                         Rigidbody2D throwingBody = throwingCollider.GetComponent<Rigidbody2D>();
                         Vector2 dir = throwingBody.position - ownerBody.position;
+                        if (Physics2D.Raycast(ownerBody.position, dir, dir.magnitude, Util.LayerStaticPhysObjectsOnly()).collider == null)
                         throwingBody.AddForce(dir * hlabyshPower, ForceMode2D.Impulse);
                     }
 
