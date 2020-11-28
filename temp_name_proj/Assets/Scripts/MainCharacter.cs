@@ -148,10 +148,10 @@ public class MainCharacter : MonoBehaviour
     {
         if (Input.GetMouseButton(1)) //Этот метод вызывается каждый кадр, если зажата ПКМ, не путать с Input.GetMouseButtonDown
         {
-            RaycastHit2D hit = Physics2D.Raycast(body.position, Util.AimDIr(), 1000f, Util.LayerPhysObjectsOnly());
+            RaycastHit2D hit = Physics2D.Raycast(body.position, Util.AimDIr(), 1000f, Util.LayerAllPhysObjects());
             Debug.DrawRay(body.position, Util.AimDIr()); //DrawRay не умеет в длину луча, действительный луч имеет длину в 1000f
 
-            if (hit.collider != null)
+            if (hit.collider != null && !Util.IsInLayerMask(hit.collider.gameObject.layer, Util.LayerStaticPhysObjectsOnly()))
             {
                 if (!grab.holding)
                 {

@@ -28,11 +28,24 @@ namespace Assets.Scripts
         public static LayerMask LayerPhysObjectsOnly() //Если проблемы со слоями нормально не решатся и у нас 
                                                        //физ. объекты для притягивания будут на больше чем одном слою, то дописать их сюда в маску
         {
-            return LayerMask.GetMask("Default");
+            return LayerMask.GetMask("Default"); //Интерактивные объекты, с которыми можно взаимодействовать
         }
-        public static LayerMask LayerMaterialObjectsOnly()
+        public static LayerMask LayerStaticPhysObjectsOnly()
         {
-            return LayerMask.GetMask("Default", "StaticPhysicalObjects", "Platform");
+            return LayerMask.GetMask("StaticPhysicalObjects"); //Статичные, неинтерактивные материальные объекты(напр. тайлмапа)
+        }
+        public static LayerMask LayerAllPhysObjects()
+        {
+            return LayerMask.GetMask("Default", "StaticPhysicalObjects"); // ВСЕ материальные объекты, влияющие на физику
+        }
+        public static LayerMask LayerMaterialObjectsOnly() 
+        {
+            return LayerMask.GetMask("Default", "StaticPhysicalObjects", "Platform"); //Все материальные объекты как таковые (но всё ещё объекты, не сущности по типу противников)
+        }
+		//TODO: ^ эти методы выходят из под контроля
+        public static bool IsInLayerMask(int layer, LayerMask layermask)
+        {
+            return layermask == (layermask | (1 << layer));
         }
     }
 }
