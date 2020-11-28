@@ -13,10 +13,12 @@ public class MainCharacter : MonoBehaviour
     float horizontal = 0;// Переменная перемещения по оси х
     float vertical = 0;
     float speed;
+    public float vel = 0;
     public float defualt_speed;
     public float sprint_speed;
     public float walk_speed;// Переменная скорости перемещения
     public float force;
+
 
     public float jump_delay = 0.05f;
     public bool grounded = false;// Переиенная состояния "на земле"
@@ -61,6 +63,10 @@ public class MainCharacter : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float loc_vel = (float)Math.Round(body.velocity.magnitude, 2);
+        if (loc_vel != 0)
+            vel = loc_vel;
+
         if (Input.GetButton("Vertical"))
         {
             if (Input.GetButton("Jump"))
@@ -179,6 +185,17 @@ public class MainCharacter : MonoBehaviour
 
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        float f = collision.relativeVelocity.magnitude * body.mass;
+        if (collision.rigidbody.bodyType == RigidbodyType2D.Dynamic)
+        {
+            Debug.Log(this.name + " // " +vel);
+            //collision.collider.gameObject.GetComponent<SpriteRenderer>().color = new Color(1.0f, 100 / f, 100 / f);
+        }
+        //Debug.Log(f);
+
+    }
 
     private void OnCollisionStay2D(Collision2D collision)
     {
@@ -194,7 +211,7 @@ public class MainCharacter : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        Debug.Log(collision.collider + "//" + hang_object);
+        //Debug.Log(collision.collider + "//" + hang_object);
         if (collision.collider == hang_object)
         {
             if (wall)
